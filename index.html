@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>圖片認字：槍的中文</title>
+  <title>圖片認字：槍的中文（安全版）</title>
   <style>
     body{font-family: system-ui, -apple-system, "Noto Sans TC", Arial; margin:0; background:#f6f7fb;}
     header{padding:16px 18px; background:white; box-shadow:0 1px 6px rgba(0,0,0,.08);}
@@ -139,7 +139,6 @@
       scoreEl.textContent = String(score);
       setMsg("答對了！這是「" + current.zh + "」。", "ok");
       speak("答對了，" + current.zh);
-      // 0.8 秒後自動下一題
       setTimeout(newRound, 800);
     }else{
       setMsg("再試一次。提示：它比較「" + current.hint + "」。", "bad");
@@ -222,7 +221,6 @@
     `);
   }
 
-  // start
   newRound();
 </script>
 </body>
