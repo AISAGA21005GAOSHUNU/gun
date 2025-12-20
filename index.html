@@ -1,171 +1,266 @@
 <!doctype html>
 <html lang="zh-Hans">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>图片识字：枪的中文</title>
-
 <style>
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, "Noto Sans SC", "PingFang SC", sans-serif;
-  background: linear-gradient(120deg,#eef2ff,#fff1f2);
-}
-header{
-  padding:16px 24px;
-  background:#ffffffcc;
-  backdrop-filter: blur(8px);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-h1{margin:0;font-size:22px;}
-button{
-  font-size:18px;
-  padding:10px 16px;
-  border-radius:12px;
-  border:1px solid #ccc;
-  background:#fff;
-  cursor:pointer;
-}
-main{
-  max-width:1100px;
-  margin:24px auto;
-  padding:0 16px;
-  display:grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap:20px;
-}
-.card{
-  background:white;
-  border-radius:24px;
-  padding:20px;
-  box-shadow:0 20px 40px rgba(0,0,0,.08);
-}
-#imgBox{
-  height:420px;
-  border:2px dashed #ddd;
-  border-radius:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-#imgBox img{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
-}
-.choice{
-  width:100%;
-  margin-top:14px;
-  padding:16px;
-  font-size:22px;
-  font-weight:700;
-  border-radius:16px;
-  border:1px solid #bbb;
-  background:#fff;
-}
-.choice:hover{background:#f0f9ff}
-.info{
-  display:flex;
-  gap:12px;
-  margin-bottom:14px;
-}
-.badge{
-  padding:10px 14px;
-  border-radius:999px;
-  background:#f1f5f9;
-  font-size:16px;
-}
-#msg{
-  margin-top:16px;
-  font-size:18px;
-}
+  :root{
+    --bg1:#eef2ff;
+    --bg2:#fff1f2;
+    --card:#fff;
+    --shadow:0 20px 40px rgba(0,0,0,.08);
+    --radius:24px;
+  }
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, "Noto Sans SC", "PingFang SC", Arial, sans-serif;
+    background: linear-gradient(120deg,var(--bg1),var(--bg2));
+  }
+  header{
+    position:sticky; top:0; z-index:10;
+    background:#ffffffcc;
+    backdrop-filter: blur(8px);
+    padding:16px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  h1{margin:0;font-size:22px;}
+  .sub{font-size:14px;color:#64748b;margin-left:10px}
+  .right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  button{
+    font-size:18px;
+    padding:10px 16px;
+    border-radius:12px;
+    border:1px solid rgba(0,0,0,.16);
+    background:#fff;
+    cursor:pointer;
+  }
+  button:hover{transform:translateY(-1px);box-shadow:0 12px 22px rgba(0,0,0,.10)}
+  main{
+    max-width:1100px;
+    margin:22px auto;
+    padding:0 16px 26px;
+    display:grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap:18px;
+  }
+  @media (max-width:900px){
+    main{grid-template-columns:1fr;}
+  }
+  .card{
+    background:rgba(255,255,255,.92);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px;
+  }
+  #imgBox{
+    height:430px;
+    border:2px dashed rgba(0,0,0,.14);
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    background:linear-gradient(180deg,#ffffff,#fafafa);
+  }
+  #imgBox img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    padding:16px;
+  }
+  .info{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+  .badge{
+    padding:10px 14px;
+    border-radius:999px;
+    background:#f1f5f9;
+    border:1px solid rgba(0,0,0,.06);
+    font-size:16px;
+  }
+  .badge strong{font-size:18px}
+  #choices{display:grid;gap:12px;}
+  .choice{
+    width:100%;
+    padding:16px 16px;
+    font-size:22px;
+    font-weight:800;
+    border-radius:16px;
+    border:1px solid rgba(0,0,0,.16);
+    background:#fff;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .choice:hover{background:#f0f9ff; transform:translateY(-1px); box-shadow:0 12px 22px rgba(0,0,0,.10);}
+  .choice.wrong{background:#fff1f2;border-color:rgba(239,68,68,.35)}
+  #msg{
+    margin-top:14px;
+    font-size:18px;
+    padding:14px 14px;
+    border-radius:16px;
+    border:1px solid rgba(0,0,0,.10);
+    background:rgba(255,255,255,.88);
+    min-height:56px;
+    line-height:1.5;
+  }
+  #msg.ok{background:rgba(16,185,129,.10); border-color:rgba(16,185,129,.22)}
+  #msg.bad{background:rgba(239,68,68,.08); border-color:rgba(239,68,68,.18)}
+  .tiny{font-size:12px;color:#64748b;margin-top:10px}
 </style>
 </head>
 
 <body>
-
 <header>
-  <h1>图片识字：枪的中文</h1>
-  <button onclick="next()">下一题</button>
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+    <h1>图片识字：枪的中文</h1>
+    <div class="sub">看图片，选正确的中文词</div>
+  </div>
+  <div class="right">
+    <label style="display:flex;align-items:center;gap:8px;font-size:14px;padding:10px 12px;border-radius:999px;background:rgba(99,102,241,.10);border:1px solid rgba(99,102,241,.18)">
+      <input id="tts" type="checkbox" />
+      中文朗读
+    </label>
+    <button id="nextBtn">下一题</button>
+  </div>
 </header>
 
 <main>
-  <div class="card">
+  <section class="card">
     <div id="imgBox"></div>
-  </div>
+    <div class="tiny">提示：这是识字练习。只学中文词语。</div>
+  </section>
 
-  <div class="card">
+  <section class="card" id="panel">
     <div class="info">
-      <div class="badge">分数：<span id="score">0</span></div>
-      <div class="badge">题数：<span id="count">0</span></div>
-      <div class="badge">提示：<span id="hint">—</span></div>
+      <div class="badge">分数：<strong id="score">0</strong></div>
+      <div class="badge">题数：<strong id="count">0</strong></div>
+      <div class="badge">提示：<strong id="hint">—</strong></div>
     </div>
 
     <div id="choices"></div>
     <div id="msg">准备好了吗？看图片，选中文词。</div>
-  </div>
+  </section>
 </main>
 
 <script>
-const items = [
-  { zh:"手枪", hint:"小",   img:"/gun/assets/shouqiang.png" },
-  { zh:"步枪", hint:"长",   img:"/gun/assets/buqiang.png" },
-  { zh:"霰弹枪", hint:"吵", img:"/gun/assets/xiandanqiang.png" },
-  { zh:"冲锋枪", hint:"快", img:"/gun/assets/chongfengqiang.png" },
-  { zh:"狙击枪", hint:"准", img:"/gun/assets/jujiqiang.png" },
-  { zh:"机枪", hint:"很大", img:"/gun/assets/jiqiang.png" }
-];
+  // 关键：用 GitHub raw URL 直接读 repo 的图片，不依赖 Pages 是否发布 assets
+  const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
 
-let score=0, count=0, current=null;
+  const items = [
+    { zh:"手枪",  hint:"小",   file:"shouqiang.png" },
+    { zh:"步枪",  hint:"长",   file:"buqiang.png" },
+    { zh:"霰弹枪",hint:"吵",   file:"xiandanqiang.png" },
+    { zh:"冲锋枪",hint:"快",   file:"chongfengqiang.png" },
+    { zh:"狙击枪",hint:"准",   file:"jujiqiang.png" },
+    { zh:"机枪",  hint:"很大", file:"jiqiang.png" },
+  ].map(x => ({...x, img: RAW_BASE + x.file}));
 
-function next(){
-  current = items[Math.floor(Math.random()*items.length)];
-  count++;
-  document.getElementById("count").textContent=count;
-  document.getElementById("hint").textContent=current.hint;
+  let score = 0, count = 0, streak = 0;
+  let current = null;
 
-  const box=document.getElementById("imgBox");
-  box.innerHTML="";
-  const img=new Image();
-  img.src=current.img;
-  img.onerror=()=>{ box.textContent="（图片未加载）"; };
-  box.appendChild(img);
+  const imgBox = document.getElementById("imgBox");
+  const choicesBox = document.getElementById("choices");
+  const msg = document.getElementById("msg");
+  const scoreEl = document.getElementById("score");
+  const countEl = document.getElementById("count");
+  const hintEl = document.getElementById("hint");
+  const tts = document.getElementById("tts");
 
-  const opts=[current.zh];
-  while(opts.length<3){
-    const t=items[Math.floor(Math.random()*items.length)].zh;
-    if(!opts.includes(t)) opts.push(t);
+  document.getElementById("nextBtn").addEventListener("click", next);
+
+  function speak(text){
+    if(!tts.checked) return;
+    if(!("speechSynthesis" in window)) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "zh-CN";
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
   }
-  opts.sort(()=>Math.random()-0.5);
 
-  const c=document.getElementById("choices");
-  c.innerHTML="";
-  opts.forEach(o=>{
-    const b=document.createElement("button");
-    b.className="choice";
-    b.textContent=o;
-    b.onclick=()=>check(o);
-    c.appendChild(b);
-  });
-
-  document.getElementById("msg").textContent="看图片，选正确的中文词。";
-}
-
-function check(ans){
-  if(ans===current.zh){
-    score++;
-    document.getElementById("score").textContent=score;
-    document.getElementById("msg").textContent="答对了！这是「"+current.zh+"」。";
-    setTimeout(next,800);
-  }else{
-    document.getElementById("msg").textContent="再试一次。提示："+current.hint;
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
   }
-}
 
-next();
+  function pickChoices(correct){
+    const others = items.filter(x => x.zh !== correct).map(x => x.zh);
+    return shuffle([correct, ...shuffle(others).slice(0,2)]);
+  }
+
+  function setMsg(text, type){
+    msg.textContent = text;
+    msg.className = type ? type : "";
+    msg.id = "msg";
+    msg.className = "msg" + (type ? (" " + type) : "");
+  }
+  // fix class since we overwrote id above in some browsers
+  msg.className = "";
+
+  function renderImage(url, alt){
+    imgBox.innerHTML = "";
+    const img = new Image();
+    img.alt = alt;
+    img.src = url;
+    img.onload = () => { imgBox.appendChild(img); };
+    img.onerror = () => {
+      imgBox.textContent = "图片加载失败（请检查文件名或网络）";
+    };
+  }
+
+  function next(){
+    current = items[Math.floor(Math.random()*items.length)];
+    count += 1;
+    countEl.textContent = String(count);
+    hintEl.textContent = current.hint;
+
+    renderImage(current.img, current.zh);
+
+    const opts = pickChoices(current.zh);
+    choicesBox.innerHTML = "";
+    opts.forEach(opt => {
+      const b = document.createElement("button");
+      b.className = "choice";
+      b.textContent = opt;
+      b.addEventListener("click", () => choose(opt, b));
+      choicesBox.appendChild(b);
+    });
+
+    msg.textContent = "看图片，选正确的中文词。";
+    msg.className = "";
+    speak(current.zh);
+  }
+
+  function choose(ans, btn){
+    if(ans === current.zh){
+      score += 1;
+      streak += 1;
+      scoreEl.textContent = String(score);
+      msg.textContent = "答对了！这是「" + current.zh + "」。";
+      msg.className = "ok";
+      speak("答对了，" + current.zh);
+      setTimeout(next, 750);
+    }else{
+      streak = 0;
+      btn.classList.add("wrong");
+      msg.textContent = "再试一次。提示：" + current.hint;
+      msg.className = "bad";
+      speak("再试一次");
+      setTimeout(()=>btn.classList.remove("wrong"), 450);
+    }
+  }
+
+  next();
 </script>
-
 </body>
 </html>
