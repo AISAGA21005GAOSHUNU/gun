@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>图片识字：枪的中文（两人对战）</title>
+<title>图片识字：枪的中文（两人对战｜无提示｜手动回合）</title>
 
 <style>
   :root{
@@ -77,6 +77,7 @@
     color:#f8fafc;
     cursor:pointer;
     transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+    user-select:none;
   }
   .btn:hover{ transform: translateY(-1px); box-shadow: 0 12px 26px rgba(0,0,0,.25); background: rgba(255,255,255,.18);}
   .btn:active{ transform: translateY(0px) scale(.99); }
@@ -123,6 +124,7 @@
     border: 1px solid rgba(2,6,23,.10);
     background: rgba(255,255,255,.88);
     font-size:14px;
+    user-select:none;
   }
   .tag .dot{ width:10px; height:10px; border-radius:999px; background:#94a3b8; }
   .tag.p1 .dot{ background: var(--p1); }
@@ -192,7 +194,7 @@
     background: rgba(255,255,255,.92);
     cursor:pointer;
     transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-    text-align:left;              /* 为了编号更清楚 */
+    text-align:left;
     display:flex;
     align-items:center;
     justify-content:flex-start;
@@ -213,10 +215,7 @@
     font-size:18px;
     font-weight:900;
   }
-  .txt{
-    font-size:22px;
-    font-weight:900;
-  }
+  .txt{ font-size:22px; font-weight:900; }
 
   .choice.wrong{
     border-color: rgba(239,68,68,.35);
@@ -283,6 +282,15 @@
     color: rgba(15,23,42,.70);
     line-height:1.45;
   }
+
+  .rowBtns{
+    display:flex; gap:10px; flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .btnPrimary{
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.25);
+  }
 </style>
 </head>
 
@@ -293,7 +301,7 @@
   <div class="wrap top">
     <div class="title">
       <h1>图片识字：枪的中文（两人对战）</h1>
-      <div class="sub">回合随机：每题随机决定谁答</div>
+      <div class="sub">无提示｜回合手动按：你决定谁答题</div>
     </div>
 
     <div class="controls">
@@ -310,7 +318,6 @@
       </label>
 
       <button id="resetBtn" class="btn" title="重置比分与等级">重置比赛</button>
-      <button id="nextBtn" class="btn">下一题</button>
     </div>
   </div>
 </header>
@@ -319,13 +326,13 @@
   <div class="grid">
     <section class="card">
       <div class="media" id="media"></div>
-      <div class="tiny">说明：这是识字对战，只学习中文词语与汉字。可按键盘 1–5 直接作答。</div>
+      <div class="tiny">说明：本模式没有提示。请先按“老师回合”或“学生回合”出题。可按键盘 1–5 作答。</div>
     </section>
 
     <section class="card" id="panel">
       <div class="turn">
-        <div class="tag p1" id="tagP1"><span class="dot"></span><span id="nameP1">老师</span> 回合</div>
-        <div class="tag p2" id="tagP2"><span class="dot"></span><span id="nameP2">学生</span> 回合</div>
+        <div class="tag p1" id="tagP1"><span class="dot"></span>老师 回合</div>
+        <div class="tag p2" id="tagP2"><span class="dot"></span>学生 回合</div>
         <div class="pill">题数：<strong id="count">0</strong></div>
         <div class="pill">等级：<strong id="level">1</strong></div>
       </div>
@@ -335,17 +342,22 @@
       </div>
 
       <div class="promptRow">
-        <div class="pill">提示：<strong id="hint">—</strong></div>
         <div class="bigWord" id="focusWord">—</div>
         <button class="iconBtn" id="speakBtn" title="重播朗读">🔊 重播</button>
       </div>
 
+      <div class="rowBtns">
+        <button id="p1Btn" class="btn btnPrimary">老师回合（出题）</button>
+        <button id="p2Btn" class="btn btnPrimary">学生回合（出题）</button>
+        <button id="clearBtn" class="btn" title="清空当前题">清空当前题</button>
+      </div>
+
       <div class="choices" id="choices"></div>
 
-      <div class="msg" id="msg">准备好了吗？点击“下一题”。</div>
+      <div class="msg" id="msg">先按“老师回合（出题）”或“学生回合（出题）”。</div>
 
       <div class="scoreBoard">
-        <div class="sb" id="sb1">
+        <div class="sb">
           <div class="name">
             <span>老师</span>
             <span style="color:var(--p1);font-weight:900;">P1</span>
@@ -356,7 +368,7 @@
           </div>
         </div>
 
-        <div class="sb" id="sb2">
+        <div class="sb">
           <div class="name">
             <span>学生</span>
             <span style="color:var(--p2);font-weight:900;">P2</span>
@@ -368,39 +380,40 @@
         </div>
       </div>
 
-      <div class="tiny">规则：每题随机决定是谁答；每题都是新题。答对加分并升级，等级越高选项越多，提示越少。</div>
+      <div class="tiny">规则：无提示。每次由你选择“老师回合/学生回合”出新题；答对加分并升级（等级越高选项越多）。</div>
     </section>
   </div>
 </main>
 
 <script>
-/* ====== 图片来源：GitHub raw（稳定） ====== */
+/* ====== 图片来源：GitHub raw ====== */
 const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
 
-/* ====== 题库：只有六种枪 ====== */
+/* ====== 题库：六种 ====== */
 const bank = [
-  { zh:"手枪",  hint:"小",   file:"shouqiang.png" },
-  { zh:"步枪",  hint:"长",   file:"buqiang.png" },
-  { zh:"霰弹枪",hint:"吵",   file:"xiandanqiang.png" },
-  { zh:"冲锋枪",hint:"快",   file:"chongfengqiang.png" },
-  { zh:"狙击枪",hint:"准",   file:"jujiqiang.png" },
-  { zh:"机枪",  hint:"很大", file:"jiqiang.png" },
+  { zh:"手枪",  file:"shouqiang.png" },
+  { zh:"步枪",  file:"buqiang.png" },
+  { zh:"霰弹枪",file:"xiandanqiang.png" },
+  { zh:"冲锋枪",file:"chongfengqiang.png" },
+  { zh:"狙击枪",file:"jujiqiang.png" },
+  { zh:"机枪",  file:"jiqiang.png" },
 ].map(x => ({...x, img: RAW_BASE + x.file}));
 
-/* ====== 两人 ====== */
+/* ====== 玩家 ====== */
 const P = [
   { name:"老师", score:0, streak:0 },
   { name:"学生", score:0, streak:0 },
 ];
 
-/* ====== 全局状态 ====== */
+/* ====== 状态 ====== */
 let count = 0;
 let level = 1;
 let xp = 0;
+
 let current = null;
-let currentTurn = 0;     // 本题轮到谁（随机）
-let optionIndexToText = []; // 编号 -> 文字
-let locked = false;
+let currentTurn = null;  // 0/1；null 表示还未选回合
+let optionIndexToText = [];
+let answered = false;    // 本题是否已答对（答对后必须你再出新题）
 
 /* ====== DOM ====== */
 const media = document.getElementById("media");
@@ -408,7 +421,6 @@ const choicesBox = document.getElementById("choices");
 const msg = document.getElementById("msg");
 const countEl = document.getElementById("count");
 const levelEl = document.getElementById("level");
-const hintEl = document.getElementById("hint");
 const bar = document.getElementById("bar");
 const focusWord = document.getElementById("focusWord");
 
@@ -420,13 +432,15 @@ const p2ScoreEl = document.getElementById("p2Score");
 const p1StreakEl = document.getElementById("p1Streak");
 const p2StreakEl = document.getElementById("p2Streak");
 
-document.getElementById("nextBtn").addEventListener("click", () => newRound(true));
+document.getElementById("p1Btn").addEventListener("click", () => startTurn(0));
+document.getElementById("p2Btn").addEventListener("click", () => startTurn(1));
+document.getElementById("clearBtn").addEventListener("click", clearCurrent);
 document.getElementById("resetBtn").addEventListener("click", resetGame);
 document.getElementById("speakBtn").addEventListener("click", () => speak(current?.zh || ""));
 
-/* ====== 键盘 1-5 直接作答 ====== */
+/* ====== 键盘 1-5 作答 ====== */
 document.addEventListener("keydown", (e) => {
-  if(!current) return;
+  if(!current || answered) return;
   const k = e.key;
   if(k >= "1" && k <= "5"){
     const idx = Number(k) - 1;
@@ -541,19 +555,11 @@ function tick(){
 }
 tick();
 
-/* ====== 难度 ====== */
+/* ====== 难度（无提示版：只增选项数） ====== */
 function choiceCount(){
   if(level <= 1) return 3;
   if(level === 2) return 4;
   return 5;
-}
-function hintText(item){
-  if(level <= 2) return item.hint;
-  if(level === 3){
-    const map = { "小":"小", "长":"长", "吵":"声音", "快":"速度", "准":"准确", "很大":"很大" };
-    return map[item.hint] || item.hint;
-  }
-  return (Math.random() < 0.55) ? "—" : item.hint;
 }
 function setProgress(){
   const need = 5;
@@ -566,7 +572,7 @@ function levelUpIfNeeded(){
     xp = 0;
     level += 1;
     levelEl.textContent = String(level);
-    msg.textContent = `升级！现在等级 ${level}：选项更多，提示更少。`;
+    msg.textContent = `升级！等级 ${level}：选项更多，更有挑战。`;
     msg.className = "msg ok";
     shootConfetti();
     beep(880, 0.10); beep(990, 0.10);
@@ -574,7 +580,6 @@ function levelUpIfNeeded(){
   setProgress();
 }
 
-/* ====== util ====== */
 function shuffle(arr){
   const a = arr.slice();
   for(let i=a.length-1;i>0;i--){
@@ -584,7 +589,6 @@ function shuffle(arr){
   return a;
 }
 
-/* ====== UI 刷新 ====== */
 function refreshScoreUI(){
   p1ScoreEl.textContent = String(P[0].score);
   p2ScoreEl.textContent = String(P[1].score);
@@ -594,8 +598,6 @@ function refreshScoreUI(){
 function refreshTurnUI(){
   tagP1.classList.toggle("active", currentTurn === 0);
   tagP2.classList.toggle("active", currentTurn === 1);
-  tagP1.innerHTML = `<span class="dot"></span>${P[0].name} 回合`;
-  tagP2.innerHTML = `<span class="dot"></span>${P[1].name} 回合`;
 }
 
 /* ====== 渲染图片 ====== */
@@ -608,33 +610,29 @@ function renderMedia(item){
   img.onerror = () => { media.textContent = "图片加载失败（请检查文件名/网络）"; };
 }
 
-/* ====== 关键改动：每题随机决定回合 + 每题新题 ====== */
-function newRound(autoSpeak=false){
-  if(locked) return;
-  locked = true;
-  setTimeout(()=>locked=false, 220);
-
-  // 1) 随机决定本题轮到谁
-  currentTurn = Math.random() < 0.5 ? 0 : 1;
+/* ====== 手动回合：按按钮才出题 ====== */
+function startTurn(turn){
+  currentTurn = turn;
   refreshTurnUI();
+  newQuestion(true);
+}
 
-  // 2) 新题（每回合都是新题）
+function newQuestion(autoSpeak=false){
+  // 出题一定是新题
   current = bank[Math.floor(Math.random()*bank.length)];
+  answered = false;
+
   count += 1;
   countEl.textContent = String(count);
 
   renderMedia(current);
-
-  const ht = hintText(current);
-  hintEl.textContent = ht;
   focusWord.textContent = current.zh;
 
-  // 3) 生成选项
   const k = choiceCount();
   const others = shuffle(bank.filter(x => x.zh !== current.zh)).slice(0, Math.max(0, k-1)).map(x => x.zh);
   const opts = shuffle([current.zh, ...others]);
 
-  optionIndexToText = opts.slice(); // 记录编号 -> 文本
+  optionIndexToText = opts.slice();
 
   choicesBox.innerHTML = "";
   opts.forEach((opt, idx) => {
@@ -657,27 +655,27 @@ function newRound(autoSpeak=false){
     choicesBox.appendChild(b);
   });
 
-  msg.textContent = `轮到 ${P[currentTurn].name}：看图片，选正确的中文词。（可按 1-${opts.length}）`;
+  msg.textContent = `轮到 ${P[currentTurn].name}：看图片，选正确的中文词。（按 1-${opts.length}）`;
   msg.className = "msg";
 
   if(autoSpeak) speak(current.zh);
 }
 
-/* ====== 作答：只给本题的 currentTurn 计分 ====== */
+/* ====== 作答：答对后不自动出新题，由你再按回合按钮 ====== */
 function choose(opt, btn){
-  if(!current) return;
+  if(!current || answered) return;
 
   if(opt === current.zh){
+    answered = true;
+
     P[currentTurn].score += 1;
     P[currentTurn].streak += 1;
-    // 另一方连对清零（可选：更有对战感）
-    const other = 1 - currentTurn;
-    P[other].streak = 0;
+    // 另一方连对归零（对战感）
+    P[1-currentTurn].streak = 0;
 
     xp += 1;
 
-    const bonus = (P[currentTurn].streak >= 3) ? ` 连对${P[currentTurn].streak}题！` : "";
-    msg.textContent = `答对了！「${current.zh}」。${bonus} 点击“下一题”进入新题。`;
+    msg.textContent = `答对了！「${current.zh}」。要出新题请按“老师回合”或“学生回合”。`;
     msg.className = "msg ok";
 
     beep(660, 0.08);
@@ -686,35 +684,42 @@ function choose(opt, btn){
 
     levelUpIfNeeded();
     refreshScoreUI();
-
-    // 关键：答对后不自动换人同题，下一题会重新随机决定回合与题目
-    current = null; // 防止重复作答
   }else{
     P[currentTurn].streak = 0;
+    refreshScoreUI();
     btn.classList.add("wrong");
-    msg.textContent = `再试一次，${P[currentTurn].name}。提示：${hintText(current)}`;
+    msg.textContent = `不对。再试一次。（无提示模式）`;
     msg.className = "msg bad";
     beep(220, 0.10);
     speak("再试一次");
-    refreshScoreUI();
     setTimeout(()=>btn.classList.remove("wrong"), 520);
   }
 }
 
-/* ====== 重置 ====== */
+function clearCurrent(){
+  current = null;
+  answered = false;
+  optionIndexToText = [];
+  choicesBox.innerHTML = "";
+  media.innerHTML = "";
+  focusWord.textContent = "—";
+  msg.textContent = "已清空。请按“老师回合”或“学生回合”出题。";
+  msg.className = "msg";
+}
+
 function resetGame(){
   count = 0; level = 1; xp = 0;
-  current = null; currentTurn = 0; optionIndexToText = [];
+  current = null; currentTurn = null; answered = false;
+  optionIndexToText = [];
   P[0].score = 0; P[0].streak = 0;
   P[1].score = 0; P[1].streak = 0;
 
   countEl.textContent = "0";
   levelEl.textContent = "1";
-  hintEl.textContent = "—";
   focusWord.textContent = "—";
   choicesBox.innerHTML = "";
   media.innerHTML = "";
-  msg.textContent = "重置完成。点击“下一题”开始。";
+  msg.textContent = "重置完成。请按“老师回合”或“学生回合”出题。";
   msg.className = "msg";
 
   setProgress();
@@ -722,12 +727,11 @@ function resetGame(){
   refreshTurnUI();
 }
 
-/* start */
+/* init */
 levelEl.textContent = String(level);
 setProgress();
 refreshScoreUI();
-refreshTurnUI();
-newRound(true);
+clearCurrent();
 </script>
 
 </body>
