@@ -7,9 +7,7 @@
 
 <style>
   :root{
-    --ink:#0b1220;
     --card: rgba(255,255,255,.86);
-    --line: rgba(255,255,255,.16);
     --shadow: 0 18px 50px rgba(0,0,0,.28);
     --radius: 22px;
 
@@ -17,7 +15,6 @@
     --p2:#ef4444;
     --good: rgba(34,197,94,.18);
     --bad: rgba(239,68,68,.16);
-    --accent: rgba(250,204,21,.18);
   }
 
   body{
@@ -116,20 +113,6 @@
     padding:14px;
   }
 
-  .hud{
-    display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
-    margin-bottom:12px;
-  }
-
-  .pill{
-    display:inline-flex; align-items:center; gap:8px;
-    padding:10px 12px; border-radius:999px;
-    background: rgba(15,23,42,.06);
-    border: 1px solid rgba(15,23,42,.10);
-    font-size:14px;
-  }
-  .pill strong{font-size:16px;}
-
   .turn{
     display:flex; align-items:center; gap:10px; flex-wrap:wrap;
     margin-bottom:10px;
@@ -141,18 +124,23 @@
     background: rgba(255,255,255,.88);
     font-size:14px;
   }
-  .tag .dot{
-    width:10px; height:10px; border-radius:999px;
-    background: #94a3b8;
-  }
+  .tag .dot{ width:10px; height:10px; border-radius:999px; background:#94a3b8; }
   .tag.p1 .dot{ background: var(--p1); }
   .tag.p2 .dot{ background: var(--p2); }
-
   .tag.active{
     outline: 3px solid rgba(250,204,21,.35);
     box-shadow: 0 10px 22px rgba(0,0,0,.12);
     transform: translateY(-1px);
   }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 12px; border-radius:999px;
+    background: rgba(15,23,42,.06);
+    border: 1px solid rgba(15,23,42,.10);
+    font-size:14px;
+  }
+  .pill strong{font-size:16px;}
 
   .barWrap{
     width:100%; height:12px;
@@ -204,10 +192,32 @@
     background: rgba(255,255,255,.92);
     cursor:pointer;
     transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-    text-align:center;
+    text-align:left;              /* 为了编号更清楚 */
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:14px;
   }
   .choice:hover{ transform: translateY(-1px); box-shadow: 0 12px 22px rgba(0,0,0,.14); background:#fff; }
   .choice:active{ transform: translateY(0px) scale(.99); }
+
+  .num{
+    min-width:44px;
+    height:36px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    border: 1px solid rgba(2,6,23,.12);
+    background: rgba(2,6,23,.04);
+    font-size:18px;
+    font-weight:900;
+  }
+  .txt{
+    font-size:22px;
+    font-weight:900;
+  }
+
   .choice.wrong{
     border-color: rgba(239,68,68,.35);
     background: rgba(239,68,68,.08);
@@ -233,13 +243,6 @@
   }
   .msg.ok{ background: var(--good); border-color: rgba(34,197,94,.26); }
   .msg.bad{ background: var(--bad); border-color: rgba(239,68,68,.20); }
-
-  .tiny{
-    margin-top:10px;
-    font-size:12px;
-    color: rgba(15,23,42,.70);
-    line-height:1.45;
-  }
 
   .scoreBoard{
     display:grid;
@@ -273,6 +276,13 @@
   canvas#confetti{
     position:fixed; inset:0; pointer-events:none; z-index:999;
   }
+
+  .tiny{
+    margin-top:10px;
+    font-size:12px;
+    color: rgba(15,23,42,.70);
+    line-height:1.45;
+  }
 </style>
 </head>
 
@@ -283,7 +293,7 @@
   <div class="wrap top">
     <div class="title">
       <h1>图片识字：枪的中文（两人对战）</h1>
-      <div class="sub">你和学生轮流答题：比谁分数高</div>
+      <div class="sub">回合随机：每题随机决定谁答</div>
     </div>
 
     <div class="controls">
@@ -298,7 +308,7 @@
           <option value="0.92">正常</option>
         </select>
       </label>
-      <button id="swapBtn" class="btn" title="交换先手">交换先手</button>
+
       <button id="resetBtn" class="btn" title="重置比分与等级">重置比赛</button>
       <button id="nextBtn" class="btn">下一题</button>
     </div>
@@ -309,12 +319,12 @@
   <div class="grid">
     <section class="card">
       <div class="media" id="media"></div>
-      <div class="tiny">说明：这是识字对战，只学习中文词语与汉字。</div>
+      <div class="tiny">说明：这是识字对战，只学习中文词语与汉字。可按键盘 1–5 直接作答。</div>
     </section>
 
     <section class="card" id="panel">
       <div class="turn">
-        <div class="tag p1 active" id="tagP1"><span class="dot"></span><span id="nameP1">老师</span> 回合</div>
+        <div class="tag p1" id="tagP1"><span class="dot"></span><span id="nameP1">老师</span> 回合</div>
         <div class="tag p2" id="tagP2"><span class="dot"></span><span id="nameP2">学生</span> 回合</div>
         <div class="pill">题数：<strong id="count">0</strong></div>
         <div class="pill">等级：<strong id="level">1</strong></div>
@@ -332,7 +342,7 @@
 
       <div class="choices" id="choices"></div>
 
-      <div class="msg" id="msg">准备好了吗？老师先答第一题。</div>
+      <div class="msg" id="msg">准备好了吗？点击“下一题”。</div>
 
       <div class="scoreBoard">
         <div class="sb" id="sb1">
@@ -358,7 +368,7 @@
         </div>
       </div>
 
-      <div class="tiny" id="ruleLine">规则：轮流答题。答对加分并升级；等级越高选项越多、提示越少。</div>
+      <div class="tiny">规则：每题随机决定是谁答；每题都是新题。答对加分并升级，等级越高选项越多，提示越少。</div>
     </section>
   </div>
 </main>
@@ -367,7 +377,7 @@
 /* ====== 图片来源：GitHub raw（稳定） ====== */
 const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
 
-/* ====== 词库（识字用） ====== */
+/* ====== 题库：只有六种枪 ====== */
 const bank = [
   { zh:"手枪",  hint:"小",   file:"shouqiang.png" },
   { zh:"步枪",  hint:"长",   file:"buqiang.png" },
@@ -377,18 +387,20 @@ const bank = [
   { zh:"机枪",  hint:"很大", file:"jiqiang.png" },
 ].map(x => ({...x, img: RAW_BASE + x.file}));
 
-/* ====== 状态（两人对战） ====== */
-let count = 0;
-let level = 1;   // 全局难度等级（两人一起提升）
-let xp = 0;      // 经验条（5 即升级）
-let current = null;
-let locked = false; // 防止一题多次点选
-
+/* ====== 两人 ====== */
 const P = [
   { name:"老师", score:0, streak:0 },
   { name:"学生", score:0, streak:0 },
 ];
-let turn = 0; // 0=P1 1=P2
+
+/* ====== 全局状态 ====== */
+let count = 0;
+let level = 1;
+let xp = 0;
+let current = null;
+let currentTurn = 0;     // 本题轮到谁（随机）
+let optionIndexToText = []; // 编号 -> 文字
+let locked = false;
 
 /* ====== DOM ====== */
 const media = document.getElementById("media");
@@ -402,6 +414,7 @@ const focusWord = document.getElementById("focusWord");
 
 const tagP1 = document.getElementById("tagP1");
 const tagP2 = document.getElementById("tagP2");
+
 const p1ScoreEl = document.getElementById("p1Score");
 const p2ScoreEl = document.getElementById("p2Score");
 const p1StreakEl = document.getElementById("p1Streak");
@@ -409,10 +422,23 @@ const p2StreakEl = document.getElementById("p2Streak");
 
 document.getElementById("nextBtn").addEventListener("click", () => newRound(true));
 document.getElementById("resetBtn").addEventListener("click", resetGame);
-document.getElementById("swapBtn").addEventListener("click", swapTurn);
 document.getElementById("speakBtn").addEventListener("click", () => speak(current?.zh || ""));
 
-/* ====== TTS：更清楚 ====== */
+/* ====== 键盘 1-5 直接作答 ====== */
+document.addEventListener("keydown", (e) => {
+  if(!current) return;
+  const k = e.key;
+  if(k >= "1" && k <= "5"){
+    const idx = Number(k) - 1;
+    if(idx >= 0 && idx < optionIndexToText.length){
+      const text = optionIndexToText[idx];
+      const btn = document.querySelector(`[data-idx="${idx}"]`);
+      if(btn) choose(text, btn);
+    }
+  }
+});
+
+/* ====== TTS ====== */
 const ttsOn = document.getElementById("ttsOn");
 const voiceSel = document.getElementById("voiceSel");
 const rateSel = document.getElementById("rateSel");
@@ -459,7 +485,7 @@ function speak(text){
   speechSynthesis.speak(u);
 }
 
-/* ====== 音效（轻量） ====== */
+/* ====== 轻音效 ====== */
 let audioCtx = null;
 function beep(freq, dur=0.08){
   try{
@@ -475,7 +501,7 @@ function beep(freq, dur=0.08){
   }catch(e){}
 }
 
-/* ====== 彩带（轻量） ====== */
+/* ====== 彩带 ====== */
 const cvs = document.getElementById("confetti");
 const ctx = cvs.getContext("2d");
 let conf = [];
@@ -483,7 +509,7 @@ function resize(){ cvs.width = innerWidth; cvs.height = innerHeight; }
 addEventListener("resize", resize); resize();
 
 function shootConfetti(){
-  const n = 90;
+  const n = 80;
   for(let i=0;i<n;i++){
     conf.push({
       x: innerWidth*0.62 + (Math.random()-0.5)*160,
@@ -515,7 +541,7 @@ function tick(){
 }
 tick();
 
-/* ====== 难度：自动增加 ====== */
+/* ====== 难度 ====== */
 function choiceCount(){
   if(level <= 1) return 3;
   if(level === 2) return 4;
@@ -543,13 +569,12 @@ function levelUpIfNeeded(){
     msg.textContent = `升级！现在等级 ${level}：选项更多，提示更少。`;
     msg.className = "msg ok";
     shootConfetti();
-    beep(880, 0.10);
-    beep(990, 0.10);
+    beep(880, 0.10); beep(990, 0.10);
   }
   setProgress();
 }
 
-/* ====== 工具：shuffle ====== */
+/* ====== util ====== */
 function shuffle(arr){
   const a = arr.slice();
   for(let i=a.length-1;i>0;i--){
@@ -559,7 +584,21 @@ function shuffle(arr){
   return a;
 }
 
-/* ====== 渲染 ====== */
+/* ====== UI 刷新 ====== */
+function refreshScoreUI(){
+  p1ScoreEl.textContent = String(P[0].score);
+  p2ScoreEl.textContent = String(P[1].score);
+  p1StreakEl.textContent = String(P[0].streak);
+  p2StreakEl.textContent = String(P[1].streak);
+}
+function refreshTurnUI(){
+  tagP1.classList.toggle("active", currentTurn === 0);
+  tagP2.classList.toggle("active", currentTurn === 1);
+  tagP1.innerHTML = `<span class="dot"></span>${P[0].name} 回合`;
+  tagP2.innerHTML = `<span class="dot"></span>${P[1].name} 回合`;
+}
+
+/* ====== 渲染图片 ====== */
 function renderMedia(item){
   media.innerHTML = "";
   const img = new Image();
@@ -569,53 +608,17 @@ function renderMedia(item){
   img.onerror = () => { media.textContent = "图片加载失败（请检查文件名/网络）"; };
 }
 
-function refreshTurnUI(){
-  tagP1.classList.toggle("active", turn === 0);
-  tagP2.classList.toggle("active", turn === 1);
-  tagP1.innerHTML = `<span class="dot"></span>${P[0].name} 回合`;
-  tagP2.innerHTML = `<span class="dot"></span>${P[1].name} 回合`;
-
-  p1ScoreEl.textContent = String(P[0].score);
-  p2ScoreEl.textContent = String(P[1].score);
-  p1StreakEl.textContent = String(P[0].streak);
-  p2StreakEl.textContent = String(P[1].streak);
-}
-
-function swapTurn(){
-  turn = 1 - turn;
-  refreshTurnUI();
-  msg.textContent = `${P[turn].name} 先手。点击“下一题”开始。`;
-  msg.className = "msg";
-}
-
-function resetGame(){
-  count = 0; level = 1; xp = 0;
-  current = null; locked = false;
-  P[0].score = 0; P[0].streak = 0;
-  P[1].score = 0; P[1].streak = 0;
-  turn = 0;
-
-  countEl.textContent = "0";
-  levelEl.textContent = "1";
-  hintEl.textContent = "—";
-  focusWord.textContent = "—";
-  choicesBox.innerHTML = "";
-  media.innerHTML = "";
-  msg.textContent = "重置完成。老师先答第一题。";
-  msg.className = "msg";
-  setProgress();
-  refreshTurnUI();
-  newRound(true);
-}
-
-/* ====== 回合出题 ======
-   autoAdvance: true 表示出题后自动朗读
-===================== */
-function newRound(autoAdvance=false){
+/* ====== 关键改动：每题随机决定回合 + 每题新题 ====== */
+function newRound(autoSpeak=false){
   if(locked) return;
   locked = true;
-  setTimeout(()=>locked=false, 250); // 小防抖
+  setTimeout(()=>locked=false, 220);
 
+  // 1) 随机决定本题轮到谁
+  currentTurn = Math.random() < 0.5 ? 0 : 1;
+  refreshTurnUI();
+
+  // 2) 新题（每回合都是新题）
   current = bank[Math.floor(Math.random()*bank.length)];
   count += 1;
   countEl.textContent = String(count);
@@ -626,65 +629,103 @@ function newRound(autoAdvance=false){
   hintEl.textContent = ht;
   focusWord.textContent = current.zh;
 
+  // 3) 生成选项
   const k = choiceCount();
   const others = shuffle(bank.filter(x => x.zh !== current.zh)).slice(0, Math.max(0, k-1)).map(x => x.zh);
   const opts = shuffle([current.zh, ...others]);
 
+  optionIndexToText = opts.slice(); // 记录编号 -> 文本
+
   choicesBox.innerHTML = "";
-  opts.forEach(opt => {
+  opts.forEach((opt, idx) => {
     const b = document.createElement("button");
     b.className = "choice";
-    b.textContent = opt;
+    b.dataset.idx = String(idx);
+
+    const num = document.createElement("span");
+    num.className = "num";
+    num.textContent = String(idx + 1);
+
+    const txt = document.createElement("span");
+    txt.className = "txt";
+    txt.textContent = opt;
+
+    b.appendChild(num);
+    b.appendChild(txt);
+
     b.addEventListener("click", () => choose(opt, b));
     choicesBox.appendChild(b);
   });
 
-  msg.textContent = `轮到 ${P[turn].name}：看图片，选正确的中文词。`;
+  msg.textContent = `轮到 ${P[currentTurn].name}：看图片，选正确的中文词。（可按 1-${opts.length}）`;
   msg.className = "msg";
-  refreshTurnUI();
 
-  if(autoAdvance) speak(current.zh);
+  if(autoSpeak) speak(current.zh);
 }
 
-/* ====== 作答 ====== */
+/* ====== 作答：只给本题的 currentTurn 计分 ====== */
 function choose(opt, btn){
   if(!current) return;
 
   if(opt === current.zh){
-    P[turn].score += 1;
-    P[turn].streak += 1;
+    P[currentTurn].score += 1;
+    P[currentTurn].streak += 1;
+    // 另一方连对清零（可选：更有对战感）
+    const other = 1 - currentTurn;
+    P[other].streak = 0;
+
     xp += 1;
 
-    const bonus = (P[turn].streak >= 3) ? ` 连对${P[turn].streak}题！` : "";
-    msg.textContent = `答对了！「${current.zh}」。${bonus} 轮到对手下一题。`;
+    const bonus = (P[currentTurn].streak >= 3) ? ` 连对${P[currentTurn].streak}题！` : "";
+    msg.textContent = `答对了！「${current.zh}」。${bonus} 点击“下一题”进入新题。`;
     msg.className = "msg ok";
 
     beep(660, 0.08);
-    if(P[turn].streak >= 2) shootConfetti();
+    if(P[currentTurn].streak >= 2) shootConfetti();
     speak("答对了，" + current.zh);
 
     levelUpIfNeeded();
-    refreshTurnUI();
+    refreshScoreUI();
 
-    // 换人
-    turn = 1 - turn;
-    setTimeout(() => newRound(true), 850);
+    // 关键：答对后不自动换人同题，下一题会重新随机决定回合与题目
+    current = null; // 防止重复作答
   }else{
-    // 答错：本回合连胜归零，但不换题，允许再试一次
-    P[turn].streak = 0;
+    P[currentTurn].streak = 0;
     btn.classList.add("wrong");
-    msg.textContent = `再试一次，${P[turn].name}。提示：${hintText(current)}`;
+    msg.textContent = `再试一次，${P[currentTurn].name}。提示：${hintText(current)}`;
     msg.className = "msg bad";
     beep(220, 0.10);
     speak("再试一次");
-    refreshTurnUI();
+    refreshScoreUI();
     setTimeout(()=>btn.classList.remove("wrong"), 520);
   }
+}
+
+/* ====== 重置 ====== */
+function resetGame(){
+  count = 0; level = 1; xp = 0;
+  current = null; currentTurn = 0; optionIndexToText = [];
+  P[0].score = 0; P[0].streak = 0;
+  P[1].score = 0; P[1].streak = 0;
+
+  countEl.textContent = "0";
+  levelEl.textContent = "1";
+  hintEl.textContent = "—";
+  focusWord.textContent = "—";
+  choicesBox.innerHTML = "";
+  media.innerHTML = "";
+  msg.textContent = "重置完成。点击“下一题”开始。";
+  msg.className = "msg";
+
+  setProgress();
+  refreshScoreUI();
+  refreshTurnUI();
 }
 
 /* start */
 levelEl.textContent = String(level);
 setProgress();
+refreshScoreUI();
 refreshTurnUI();
 newRound(true);
 </script>
