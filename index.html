@@ -3,264 +3,691 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>图片识字：枪的中文</title>
+<title>图片识字：枪的中文（两人对战）</title>
+
 <style>
   :root{
-    --bg1:#eef2ff;
-    --bg2:#fff1f2;
-    --card:#fff;
-    --shadow:0 20px 40px rgba(0,0,0,.08);
-    --radius:24px;
+    --ink:#0b1220;
+    --card: rgba(255,255,255,.86);
+    --line: rgba(255,255,255,.16);
+    --shadow: 0 18px 50px rgba(0,0,0,.28);
+    --radius: 22px;
+
+    --p1:#2563eb;
+    --p2:#ef4444;
+    --good: rgba(34,197,94,.18);
+    --bad: rgba(239,68,68,.16);
+    --accent: rgba(250,204,21,.18);
   }
+
   body{
     margin:0;
-    font-family: system-ui, -apple-system, "Noto Sans SC", "PingFang SC", Arial, sans-serif;
-    background: linear-gradient(120deg,var(--bg1),var(--bg2));
+    font-family: system-ui, -apple-system, "Noto Sans SC","PingFang SC", Arial, sans-serif;
+    color: #0b1220;
+    background:
+      radial-gradient(1200px 600px at 15% 20%, rgba(34,197,94,.25), transparent 60%),
+      radial-gradient(900px 500px at 90% 15%, rgba(250,204,21,.22), transparent 58%),
+      radial-gradient(1000px 600px at 70% 85%, rgba(14,165,233,.18), transparent 60%),
+      radial-gradient(140px 110px at 12% 36%, rgba(20,83,45,.55), transparent 70%),
+      radial-gradient(190px 140px at 23% 66%, rgba(30,64,175,.18), transparent 70%),
+      radial-gradient(210px 160px at 38% 45%, rgba(124,45,18,.24), transparent 70%),
+      radial-gradient(160px 120px at 58% 28%, rgba(20,83,45,.45), transparent 70%),
+      radial-gradient(220px 170px at 72% 56%, rgba(63,98,18,.40), transparent 70%),
+      radial-gradient(200px 150px at 88% 44%, rgba(120,53,15,.28), transparent 70%),
+      linear-gradient(135deg, #0b1a12, #0b1220);
+    min-height:100vh;
   }
+
   header{
-    position:sticky; top:0; z-index:10;
-    background:#ffffffcc;
-    backdrop-filter: blur(8px);
-    padding:16px 22px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-bottom:1px solid rgba(0,0,0,.06);
+    position:sticky; top:0; z-index:30;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(180deg, rgba(0,0,0,.58), rgba(0,0,0,.25));
+    border-bottom: 1px solid rgba(255,255,255,.10);
   }
-  h1{margin:0;font-size:22px;}
-  .sub{font-size:14px;color:#64748b;margin-left:10px}
-  .right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  button{
-    font-size:18px;
-    padding:10px 16px;
+
+  .wrap{max-width:1220px; margin:0 auto; padding:14px 18px;}
+  .top{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+
+  .title{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; color:#e5e7eb;}
+  h1{margin:0; font-size:22px; letter-spacing:.3px;}
+  .sub{font-size:14px; color: rgba(226,232,240,.86)}
+
+  .controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .chip{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 12px; border-radius:999px;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.16);
+    color:#e5e7eb; font-size:14px;
+  }
+
+  select{
+    font-size:14px;
+    padding:9px 10px;
     border-radius:12px;
-    border:1px solid rgba(0,0,0,.16);
-    background:#fff;
-    cursor:pointer;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.25);
+    color:#f8fafc;
+    outline:none;
   }
-  button:hover{transform:translateY(-1px);box-shadow:0 12px 22px rgba(0,0,0,.10)}
-  main{
-    max-width:1100px;
-    margin:22px auto;
-    padding:0 16px 26px;
+
+  .btn{
+    font-size:16px;
+    padding:10px 14px;
+    border-radius:14px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.12);
+    color:#f8fafc;
+    cursor:pointer;
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  .btn:hover{ transform: translateY(-1px); box-shadow: 0 12px 26px rgba(0,0,0,.25); background: rgba(255,255,255,.18);}
+  .btn:active{ transform: translateY(0px) scale(.99); }
+
+  main .grid{
+    max-width:1220px;
+    margin:16px auto 26px;
+    padding:0 18px;
     display:grid;
-    grid-template-columns: 1.15fr .85fr;
+    grid-template-columns: 1.2fr .8fr;
     gap:18px;
   }
-  @media (max-width:900px){
-    main{grid-template-columns:1fr;}
-  }
+  @media (max-width:980px){ main .grid{ grid-template-columns: 1fr; } }
+
   .card{
-    background:rgba(255,255,255,.92);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
+    border-radius: var(--radius);
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.22);
+    box-shadow: var(--shadow);
     padding:18px;
   }
-  #imgBox{
-    height:430px;
-    border:2px dashed rgba(0,0,0,.14);
+
+  .media{
+    height:460px;
     border-radius:18px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    border: 1px dashed rgba(0,0,0,.18);
+    background: rgba(255,255,255,.55);
+    display:flex; align-items:center; justify-content:center;
     overflow:hidden;
-    background:linear-gradient(180deg,#ffffff,#fafafa);
   }
-  #imgBox img{
-    width:100%;
-    height:100%;
+  .media img{
+    width:100%; height:100%;
     object-fit:contain;
-    padding:16px;
+    padding:14px;
   }
-  .info{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
+
+  .hud{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
     margin-bottom:12px;
   }
-  .badge{
-    padding:10px 14px;
-    border-radius:999px;
-    background:#f1f5f9;
-    border:1px solid rgba(0,0,0,.06);
-    font-size:16px;
+
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 12px; border-radius:999px;
+    background: rgba(15,23,42,.06);
+    border: 1px solid rgba(15,23,42,.10);
+    font-size:14px;
   }
-  .badge strong{font-size:18px}
-  #choices{display:grid;gap:12px;}
+  .pill strong{font-size:16px;}
+
+  .turn{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    margin-bottom:10px;
+  }
+  .tag{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 12px; border-radius:999px;
+    border: 1px solid rgba(2,6,23,.10);
+    background: rgba(255,255,255,.88);
+    font-size:14px;
+  }
+  .tag .dot{
+    width:10px; height:10px; border-radius:999px;
+    background: #94a3b8;
+  }
+  .tag.p1 .dot{ background: var(--p1); }
+  .tag.p2 .dot{ background: var(--p2); }
+
+  .tag.active{
+    outline: 3px solid rgba(250,204,21,.35);
+    box-shadow: 0 10px 22px rgba(0,0,0,.12);
+    transform: translateY(-1px);
+  }
+
+  .barWrap{
+    width:100%; height:12px;
+    border-radius:999px;
+    background: rgba(2,6,23,.08);
+    border: 1px solid rgba(2,6,23,.08);
+    overflow:hidden;
+    margin:10px 0 14px;
+  }
+  .bar{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    background: linear-gradient(90deg, rgba(34,197,94,.95), rgba(250,204,21,.95));
+    transition: width .25s ease;
+  }
+
+  .promptRow{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+  .bigWord{
+    font-size:22px; font-weight:900;
+    padding:10px 14px; border-radius:16px;
+    background: rgba(2,6,23,.04);
+    border: 1px solid rgba(2,6,23,.08);
+  }
+  .iconBtn{
+    font-size:16px;
+    padding:10px 12px;
+    border-radius:14px;
+    border: 1px solid rgba(2,6,23,.12);
+    background: rgba(255,255,255,.92);
+    cursor:pointer;
+  }
+
+  .choices{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+    margin-top:12px;
+  }
   .choice{
     width:100%;
-    padding:16px 16px;
     font-size:22px;
-    font-weight:800;
-    border-radius:16px;
-    border:1px solid rgba(0,0,0,.16);
-    background:#fff;
+    font-weight:900;
+    padding:16px 16px;
+    border-radius:18px;
+    border: 1px solid rgba(2,6,23,.14);
+    background: rgba(255,255,255,.92);
     cursor:pointer;
-    transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+    text-align:center;
   }
-  .choice:hover{background:#f0f9ff; transform:translateY(-1px); box-shadow:0 12px 22px rgba(0,0,0,.10);}
-  .choice.wrong{background:#fff1f2;border-color:rgba(239,68,68,.35)}
-  #msg{
+  .choice:hover{ transform: translateY(-1px); box-shadow: 0 12px 22px rgba(0,0,0,.14); background:#fff; }
+  .choice:active{ transform: translateY(0px) scale(.99); }
+  .choice.wrong{
+    border-color: rgba(239,68,68,.35);
+    background: rgba(239,68,68,.08);
+    animation: shake .22s ease-in-out 0s 2;
+  }
+  @keyframes shake{
+    0%{ transform: translateX(0); }
+    25%{ transform: translateX(-6px); }
+    50%{ transform: translateX(6px); }
+    75%{ transform: translateX(-4px); }
+    100%{ transform: translateX(0); }
+  }
+
+  .msg{
     margin-top:14px;
-    font-size:18px;
     padding:14px 14px;
     border-radius:16px;
-    border:1px solid rgba(0,0,0,.10);
-    background:rgba(255,255,255,.88);
-    min-height:56px;
+    border: 1px solid rgba(2,6,23,.10);
+    background: rgba(255,255,255,.85);
+    min-height:64px;
+    font-size:16px;
     line-height:1.5;
   }
-  #msg.ok{background:rgba(16,185,129,.10); border-color:rgba(16,185,129,.22)}
-  #msg.bad{background:rgba(239,68,68,.08); border-color:rgba(239,68,68,.18)}
-  .tiny{font-size:12px;color:#64748b;margin-top:10px}
+  .msg.ok{ background: var(--good); border-color: rgba(34,197,94,.26); }
+  .msg.bad{ background: var(--bad); border-color: rgba(239,68,68,.20); }
+
+  .tiny{
+    margin-top:10px;
+    font-size:12px;
+    color: rgba(15,23,42,.70);
+    line-height:1.45;
+  }
+
+  .scoreBoard{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+  }
+  .sb{
+    border-radius:18px;
+    padding:12px 12px;
+    border: 1px solid rgba(2,6,23,.10);
+    background: rgba(255,255,255,.88);
+  }
+  .sb .name{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    font-weight:900; font-size:16px;
+  }
+  .sb .meta{
+    margin-top:8px;
+    display:flex; gap:10px; flex-wrap:wrap;
+    font-size:13px;
+    color: rgba(15,23,42,.75);
+  }
+  .badgeMini{
+    padding:6px 10px;
+    border-radius:999px;
+    background: rgba(2,6,23,.04);
+    border: 1px solid rgba(2,6,23,.06);
+  }
+
+  canvas#confetti{
+    position:fixed; inset:0; pointer-events:none; z-index:999;
+  }
 </style>
 </head>
 
 <body>
+<canvas id="confetti"></canvas>
+
 <header>
-  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
-    <h1>图片识字：枪的中文</h1>
-    <div class="sub">看图片，选正确的中文词</div>
-  </div>
-  <div class="right">
-    <label style="display:flex;align-items:center;gap:8px;font-size:14px;padding:10px 12px;border-radius:999px;background:rgba(99,102,241,.10);border:1px solid rgba(99,102,241,.18)">
-      <input id="tts" type="checkbox" />
-      中文朗读
-    </label>
-    <button id="nextBtn">下一题</button>
+  <div class="wrap top">
+    <div class="title">
+      <h1>图片识字：枪的中文（两人对战）</h1>
+      <div class="sub">你和学生轮流答题：比谁分数高</div>
+    </div>
+
+    <div class="controls">
+      <label class="chip"><input id="ttsOn" type="checkbox" checked /> 中文朗读</label>
+      <label class="chip">语音：
+        <select id="voiceSel" title="选择中文声音"></select>
+      </label>
+      <label class="chip">语速：
+        <select id="rateSel" title="语速">
+          <option value="0.78">更慢</option>
+          <option value="0.85" selected>慢</option>
+          <option value="0.92">正常</option>
+        </select>
+      </label>
+      <button id="swapBtn" class="btn" title="交换先手">交换先手</button>
+      <button id="resetBtn" class="btn" title="重置比分与等级">重置比赛</button>
+      <button id="nextBtn" class="btn">下一题</button>
+    </div>
   </div>
 </header>
 
 <main>
-  <section class="card">
-    <div id="imgBox"></div>
-    <div class="tiny">提示：这是识字练习。只学中文词语。</div>
-  </section>
+  <div class="grid">
+    <section class="card">
+      <div class="media" id="media"></div>
+      <div class="tiny">说明：这是识字对战，只学习中文词语与汉字。</div>
+    </section>
 
-  <section class="card" id="panel">
-    <div class="info">
-      <div class="badge">分数：<strong id="score">0</strong></div>
-      <div class="badge">题数：<strong id="count">0</strong></div>
-      <div class="badge">提示：<strong id="hint">—</strong></div>
-    </div>
+    <section class="card" id="panel">
+      <div class="turn">
+        <div class="tag p1 active" id="tagP1"><span class="dot"></span><span id="nameP1">老师</span> 回合</div>
+        <div class="tag p2" id="tagP2"><span class="dot"></span><span id="nameP2">学生</span> 回合</div>
+        <div class="pill">题数：<strong id="count">0</strong></div>
+        <div class="pill">等级：<strong id="level">1</strong></div>
+      </div>
 
-    <div id="choices"></div>
-    <div id="msg">准备好了吗？看图片，选中文词。</div>
-  </section>
+      <div class="barWrap" aria-label="升级进度">
+        <div class="bar" id="bar"></div>
+      </div>
+
+      <div class="promptRow">
+        <div class="pill">提示：<strong id="hint">—</strong></div>
+        <div class="bigWord" id="focusWord">—</div>
+        <button class="iconBtn" id="speakBtn" title="重播朗读">🔊 重播</button>
+      </div>
+
+      <div class="choices" id="choices"></div>
+
+      <div class="msg" id="msg">准备好了吗？老师先答第一题。</div>
+
+      <div class="scoreBoard">
+        <div class="sb" id="sb1">
+          <div class="name">
+            <span>老师</span>
+            <span style="color:var(--p1);font-weight:900;">P1</span>
+          </div>
+          <div class="meta">
+            <span class="badgeMini">分数：<strong id="p1Score">0</strong></span>
+            <span class="badgeMini">连对：<strong id="p1Streak">0</strong></span>
+          </div>
+        </div>
+
+        <div class="sb" id="sb2">
+          <div class="name">
+            <span>学生</span>
+            <span style="color:var(--p2);font-weight:900;">P2</span>
+          </div>
+          <div class="meta">
+            <span class="badgeMini">分数：<strong id="p2Score">0</strong></span>
+            <span class="badgeMini">连对：<strong id="p2Streak">0</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tiny" id="ruleLine">规则：轮流答题。答对加分并升级；等级越高选项越多、提示越少。</div>
+    </section>
+  </div>
 </main>
 
 <script>
-  // 关键：用 GitHub raw URL 直接读 repo 的图片，不依赖 Pages 是否发布 assets
-  const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
+/* ====== 图片来源：GitHub raw（稳定） ====== */
+const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
 
-  const items = [
-    { zh:"手枪",  hint:"小",   file:"shouqiang.png" },
-    { zh:"步枪",  hint:"长",   file:"buqiang.png" },
-    { zh:"霰弹枪",hint:"吵",   file:"xiandanqiang.png" },
-    { zh:"冲锋枪",hint:"快",   file:"chongfengqiang.png" },
-    { zh:"狙击枪",hint:"准",   file:"jujiqiang.png" },
-    { zh:"机枪",  hint:"很大", file:"jiqiang.png" },
-  ].map(x => ({...x, img: RAW_BASE + x.file}));
+/* ====== 词库（识字用） ====== */
+const bank = [
+  { zh:"手枪",  hint:"小",   file:"shouqiang.png" },
+  { zh:"步枪",  hint:"长",   file:"buqiang.png" },
+  { zh:"霰弹枪",hint:"吵",   file:"xiandanqiang.png" },
+  { zh:"冲锋枪",hint:"快",   file:"chongfengqiang.png" },
+  { zh:"狙击枪",hint:"准",   file:"jujiqiang.png" },
+  { zh:"机枪",  hint:"很大", file:"jiqiang.png" },
+].map(x => ({...x, img: RAW_BASE + x.file}));
 
-  let score = 0, count = 0, streak = 0;
-  let current = null;
+/* ====== 状态（两人对战） ====== */
+let count = 0;
+let level = 1;   // 全局难度等级（两人一起提升）
+let xp = 0;      // 经验条（5 即升级）
+let current = null;
+let locked = false; // 防止一题多次点选
 
-  const imgBox = document.getElementById("imgBox");
-  const choicesBox = document.getElementById("choices");
-  const msg = document.getElementById("msg");
-  const scoreEl = document.getElementById("score");
-  const countEl = document.getElementById("count");
-  const hintEl = document.getElementById("hint");
-  const tts = document.getElementById("tts");
+const P = [
+  { name:"老师", score:0, streak:0 },
+  { name:"学生", score:0, streak:0 },
+];
+let turn = 0; // 0=P1 1=P2
 
-  document.getElementById("nextBtn").addEventListener("click", next);
+/* ====== DOM ====== */
+const media = document.getElementById("media");
+const choicesBox = document.getElementById("choices");
+const msg = document.getElementById("msg");
+const countEl = document.getElementById("count");
+const levelEl = document.getElementById("level");
+const hintEl = document.getElementById("hint");
+const bar = document.getElementById("bar");
+const focusWord = document.getElementById("focusWord");
 
-  function speak(text){
-    if(!tts.checked) return;
-    if(!("speechSynthesis" in window)) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "zh-CN";
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
+const tagP1 = document.getElementById("tagP1");
+const tagP2 = document.getElementById("tagP2");
+const p1ScoreEl = document.getElementById("p1Score");
+const p2ScoreEl = document.getElementById("p2Score");
+const p1StreakEl = document.getElementById("p1Streak");
+const p2StreakEl = document.getElementById("p2Streak");
+
+document.getElementById("nextBtn").addEventListener("click", () => newRound(true));
+document.getElementById("resetBtn").addEventListener("click", resetGame);
+document.getElementById("swapBtn").addEventListener("click", swapTurn);
+document.getElementById("speakBtn").addEventListener("click", () => speak(current?.zh || ""));
+
+/* ====== TTS：更清楚 ====== */
+const ttsOn = document.getElementById("ttsOn");
+const voiceSel = document.getElementById("voiceSel");
+const rateSel = document.getElementById("rateSel");
+
+function loadVoices(){
+  const all = speechSynthesis.getVoices();
+  const zh = all.filter(v => /zh|cmn/i.test(v.lang) || /Chinese/i.test(v.name));
+  const list = zh.length ? zh : all;
+  voiceSel.innerHTML = "";
+  list.forEach((v, idx) => {
+    const opt = document.createElement("option");
+    opt.value = String(idx);
+    opt.textContent = `${v.name} (${v.lang})`;
+    voiceSel.appendChild(opt);
+  });
+  if(zh.length){
+    const defaultIndex = list.indexOf(zh[0]);
+    voiceSel.value = String(defaultIndex);
+  }else{
+    voiceSel.value = "0";
   }
+}
+if("speechSynthesis" in window){
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+function speak(text){
+  if(!ttsOn.checked) return;
+  if(!("speechSynthesis" in window)) return;
+  if(!text) return;
 
-  function shuffle(arr){
-    const a = arr.slice();
-    for(let i=a.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [a[i],a[j]] = [a[j],a[i]];
-    }
-    return a;
-  }
+  const all = speechSynthesis.getVoices();
+  const idx = Number(voiceSel.value || 0);
+  const v = all[idx] || all.find(x => /zh|cmn/i.test(x.lang)) || null;
 
-  function pickChoices(correct){
-    const others = items.filter(x => x.zh !== correct).map(x => x.zh);
-    return shuffle([correct, ...shuffle(others).slice(0,2)]);
-  }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "zh-CN";
+  if(v) u.voice = v;
+  u.rate = Number(rateSel.value || 0.85);
+  u.pitch = 1.0;
+  u.volume = 1.0;
 
-  function setMsg(text, type){
-    msg.textContent = text;
-    msg.className = type ? type : "";
-    msg.id = "msg";
-    msg.className = "msg" + (type ? (" " + type) : "");
-  }
-  // fix class since we overwrote id above in some browsers
-  msg.className = "";
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
 
-  function renderImage(url, alt){
-    imgBox.innerHTML = "";
-    const img = new Image();
-    img.alt = alt;
-    img.src = url;
-    img.onload = () => { imgBox.appendChild(img); };
-    img.onerror = () => {
-      imgBox.textContent = "图片加载失败（请检查文件名或网络）";
-    };
-  }
+/* ====== 音效（轻量） ====== */
+let audioCtx = null;
+function beep(freq, dur=0.08){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = "sine";
+    o.frequency.value = freq;
+    g.gain.value = 0.06;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    setTimeout(()=>{ o.stop(); }, dur*1000);
+  }catch(e){}
+}
 
-  function next(){
-    current = items[Math.floor(Math.random()*items.length)];
-    count += 1;
-    countEl.textContent = String(count);
-    hintEl.textContent = current.hint;
+/* ====== 彩带（轻量） ====== */
+const cvs = document.getElementById("confetti");
+const ctx = cvs.getContext("2d");
+let conf = [];
+function resize(){ cvs.width = innerWidth; cvs.height = innerHeight; }
+addEventListener("resize", resize); resize();
 
-    renderImage(current.img, current.zh);
-
-    const opts = pickChoices(current.zh);
-    choicesBox.innerHTML = "";
-    opts.forEach(opt => {
-      const b = document.createElement("button");
-      b.className = "choice";
-      b.textContent = opt;
-      b.addEventListener("click", () => choose(opt, b));
-      choicesBox.appendChild(b);
+function shootConfetti(){
+  const n = 90;
+  for(let i=0;i<n;i++){
+    conf.push({
+      x: innerWidth*0.62 + (Math.random()-0.5)*160,
+      y: innerHeight*0.22,
+      vx: (Math.random()-0.5)*10,
+      vy: Math.random()*-9 - 6,
+      g: 0.22 + Math.random()*0.08,
+      r: 3 + Math.random()*4,
+      a: 1
     });
-
-    msg.textContent = "看图片，选正确的中文词。";
-    msg.className = "";
-    speak(current.zh);
   }
-
-  function choose(ans, btn){
-    if(ans === current.zh){
-      score += 1;
-      streak += 1;
-      scoreEl.textContent = String(score);
-      msg.textContent = "答对了！这是「" + current.zh + "」。";
-      msg.className = "ok";
-      speak("答对了，" + current.zh);
-      setTimeout(next, 750);
-    }else{
-      streak = 0;
-      btn.classList.add("wrong");
-      msg.textContent = "再试一次。提示：" + current.hint;
-      msg.className = "bad";
-      speak("再试一次");
-      setTimeout(()=>btn.classList.remove("wrong"), 450);
-    }
+}
+function tick(){
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+  conf = conf.filter(p => p.a > 0);
+  for(const p of conf){
+    p.vy += p.g;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.a -= 0.012;
+    ctx.globalAlpha = Math.max(p.a,0);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = "rgba(255,255,255,1)";
+    ctx.fill();
   }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(tick);
+}
+tick();
 
-  next();
+/* ====== 难度：自动增加 ====== */
+function choiceCount(){
+  if(level <= 1) return 3;
+  if(level === 2) return 4;
+  return 5;
+}
+function hintText(item){
+  if(level <= 2) return item.hint;
+  if(level === 3){
+    const map = { "小":"小", "长":"长", "吵":"声音", "快":"速度", "准":"准确", "很大":"很大" };
+    return map[item.hint] || item.hint;
+  }
+  return (Math.random() < 0.55) ? "—" : item.hint;
+}
+function setProgress(){
+  const need = 5;
+  const pct = Math.min(100, (xp / need) * 100);
+  bar.style.width = pct + "%";
+}
+function levelUpIfNeeded(){
+  const need = 5;
+  if(xp >= need){
+    xp = 0;
+    level += 1;
+    levelEl.textContent = String(level);
+    msg.textContent = `升级！现在等级 ${level}：选项更多，提示更少。`;
+    msg.className = "msg ok";
+    shootConfetti();
+    beep(880, 0.10);
+    beep(990, 0.10);
+  }
+  setProgress();
+}
+
+/* ====== 工具：shuffle ====== */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+/* ====== 渲染 ====== */
+function renderMedia(item){
+  media.innerHTML = "";
+  const img = new Image();
+  img.alt = item.zh;
+  img.src = item.img;
+  img.onload = () => media.appendChild(img);
+  img.onerror = () => { media.textContent = "图片加载失败（请检查文件名/网络）"; };
+}
+
+function refreshTurnUI(){
+  tagP1.classList.toggle("active", turn === 0);
+  tagP2.classList.toggle("active", turn === 1);
+  tagP1.innerHTML = `<span class="dot"></span>${P[0].name} 回合`;
+  tagP2.innerHTML = `<span class="dot"></span>${P[1].name} 回合`;
+
+  p1ScoreEl.textContent = String(P[0].score);
+  p2ScoreEl.textContent = String(P[1].score);
+  p1StreakEl.textContent = String(P[0].streak);
+  p2StreakEl.textContent = String(P[1].streak);
+}
+
+function swapTurn(){
+  turn = 1 - turn;
+  refreshTurnUI();
+  msg.textContent = `${P[turn].name} 先手。点击“下一题”开始。`;
+  msg.className = "msg";
+}
+
+function resetGame(){
+  count = 0; level = 1; xp = 0;
+  current = null; locked = false;
+  P[0].score = 0; P[0].streak = 0;
+  P[1].score = 0; P[1].streak = 0;
+  turn = 0;
+
+  countEl.textContent = "0";
+  levelEl.textContent = "1";
+  hintEl.textContent = "—";
+  focusWord.textContent = "—";
+  choicesBox.innerHTML = "";
+  media.innerHTML = "";
+  msg.textContent = "重置完成。老师先答第一题。";
+  msg.className = "msg";
+  setProgress();
+  refreshTurnUI();
+  newRound(true);
+}
+
+/* ====== 回合出题 ======
+   autoAdvance: true 表示出题后自动朗读
+===================== */
+function newRound(autoAdvance=false){
+  if(locked) return;
+  locked = true;
+  setTimeout(()=>locked=false, 250); // 小防抖
+
+  current = bank[Math.floor(Math.random()*bank.length)];
+  count += 1;
+  countEl.textContent = String(count);
+
+  renderMedia(current);
+
+  const ht = hintText(current);
+  hintEl.textContent = ht;
+  focusWord.textContent = current.zh;
+
+  const k = choiceCount();
+  const others = shuffle(bank.filter(x => x.zh !== current.zh)).slice(0, Math.max(0, k-1)).map(x => x.zh);
+  const opts = shuffle([current.zh, ...others]);
+
+  choicesBox.innerHTML = "";
+  opts.forEach(opt => {
+    const b = document.createElement("button");
+    b.className = "choice";
+    b.textContent = opt;
+    b.addEventListener("click", () => choose(opt, b));
+    choicesBox.appendChild(b);
+  });
+
+  msg.textContent = `轮到 ${P[turn].name}：看图片，选正确的中文词。`;
+  msg.className = "msg";
+  refreshTurnUI();
+
+  if(autoAdvance) speak(current.zh);
+}
+
+/* ====== 作答 ====== */
+function choose(opt, btn){
+  if(!current) return;
+
+  if(opt === current.zh){
+    P[turn].score += 1;
+    P[turn].streak += 1;
+    xp += 1;
+
+    const bonus = (P[turn].streak >= 3) ? ` 连对${P[turn].streak}题！` : "";
+    msg.textContent = `答对了！「${current.zh}」。${bonus} 轮到对手下一题。`;
+    msg.className = "msg ok";
+
+    beep(660, 0.08);
+    if(P[turn].streak >= 2) shootConfetti();
+    speak("答对了，" + current.zh);
+
+    levelUpIfNeeded();
+    refreshTurnUI();
+
+    // 换人
+    turn = 1 - turn;
+    setTimeout(() => newRound(true), 850);
+  }else{
+    // 答错：本回合连胜归零，但不换题，允许再试一次
+    P[turn].streak = 0;
+    btn.classList.add("wrong");
+    msg.textContent = `再试一次，${P[turn].name}。提示：${hintText(current)}`;
+    msg.className = "msg bad";
+    beep(220, 0.10);
+    speak("再试一次");
+    refreshTurnUI();
+    setTimeout(()=>btn.classList.remove("wrong"), 520);
+  }
+}
+
+/* start */
+levelEl.textContent = String(level);
+setProgress();
+refreshTurnUI();
+newRound(true);
 </script>
+
 </body>
 </html>
