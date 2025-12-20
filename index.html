@@ -1,443 +1,171 @@
 <!doctype html>
 <html lang="zh-Hans">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>图片识字：枪的中文</title>
-  <style>
-    :root{
-      --bg: #f3f6ff;
-      --card: #ffffff;
-      --border: rgba(0,0,0,.08);
-      --shadow: 0 16px 40px rgba(18, 38, 94, .10);
-      --radius: 22px;
-      --text: #0f172a;
-      --muted: #64748b;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, "Noto Sans SC", "PingFang SC", Arial;
-      background: radial-gradient(1200px 600px at 20% 10%, #e9f0ff 0, transparent 60%),
-                  radial-gradient(900px 500px at 90% 20%, #ffe9f3 0, transparent 55%),
-                  var(--bg);
-      color:var(--text);
-    }
-    header{
-      position:sticky; top:0; z-index:20;
-      backdrop-filter: blur(10px);
-      background: rgba(255,255,255,.78);
-      border-bottom: 1px solid var(--border);
-    }
-    .wrap{max-width:1100px; margin:0 auto; padding:16px 18px;}
-    .top{
-      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-    }
-    .title{
-      display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
-    }
-    h1{font-size:24px; margin:0; letter-spacing:.2px;}
-    .sub{font-size:14px; color:var(--muted)}
-    .controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
-    .chip{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 12px; border-radius:999px;
-      background: rgba(99,102,241,.10);
-      border: 1px solid rgba(99,102,241,.20);
-      font-size:14px;
-    }
-    .btn{
-      padding:12px 14px;
-      border-radius:14px;
-      border: 1px solid rgba(2,6,23,.12);
-      background: #fff;
-      cursor:pointer;
-      font-size:16px;
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    .btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 20px rgba(0,0,0,.08); }
-    .btn:active{ transform: translateY(0px) scale(.99); }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图片识字：枪的中文</title>
 
-    main .grid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:18px;
-      padding-top:18px;
-    }
-    @media (max-width:920px){
-      main .grid{ grid-template-columns:1fr; }
-    }
-    .card{
-      background: rgba(255,255,255,.86);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      padding:18px;
-    }
-
-    .media{
-      height:420px;
-      border-radius: 18px;
-      border: 1px dashed rgba(0,0,0,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.45));
-      display:flex; align-items:center; justify-content:center;
-      overflow:hidden;
-      position:relative;
-    }
-    .media img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      transform: translateZ(0);
-      animation: float 3.6s ease-in-out infinite;
-      padding:18px;
-    }
-    @keyframes float{
-      0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(-6px); }
-    }
-
-    .hud{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
-      margin-bottom:12px;
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:10px 12px; border-radius:999px;
-      background: rgba(2,6,23,.04);
-      border: 1px solid rgba(2,6,23,.08);
-      font-size:14px;
-    }
-    .pill strong{font-size:16px;}
-    .hint{
-      background: rgba(16,185,129,.10);
-      border-color: rgba(16,185,129,.18);
-    }
-
-    .progress{
-      width:100%;
-      height:12px;
-      border-radius:999px;
-      background: rgba(2,6,23,.06);
-      overflow:hidden;
-      border: 1px solid rgba(2,6,23,.06);
-      margin:10px 0 14px;
-    }
-    .bar{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(99,102,241,.9), rgba(236,72,153,.9));
-      border-radius:999px;
-      transition: width .25s ease;
-    }
-
-    .choices{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-    }
-    .choice{
-      width:100%;
-      font-size:22px;           /* 放大 */
-      font-weight:700;
-      padding:16px 16px;
-      border-radius:18px;
-      border: 1px solid rgba(2,6,23,.12);
-      background: rgba(255,255,255,.95);
-      cursor:pointer;
-      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-      text-align:center;
-    }
-    .choice:hover{ transform: translateY(-1px); box-shadow: 0 12px 22px rgba(0,0,0,.10); background:#fff; }
-    .choice:active{ transform: translateY(0px) scale(.99); }
-    .choice.wrong{
-      animation: shake .22s ease-in-out 0s 2;
-      border-color: rgba(239,68,68,.40);
-      background: rgba(239,68,68,.06);
-    }
-    @keyframes shake{
-      0%{ transform: translateX(0); }
-      25%{ transform: translateX(-6px); }
-      50%{ transform: translateX(6px); }
-      75%{ transform: translateX(-4px); }
-      100%{ transform: translateX(0); }
-    }
-
-    .msg{
-      margin-top:14px;
-      padding:14px 14px;
-      border-radius:16px;
-      border: 1px solid rgba(2,6,23,.10);
-      background: rgba(255,255,255,.85);
-      min-height:56px;
-      font-size:16px;
-      line-height:1.5;
-    }
-    .msg.ok{ border-color: rgba(16,185,129,.28); background: rgba(16,185,129,.08); }
-    .msg.bad{ border-color: rgba(239,68,68,.22); background: rgba(239,68,68,.06); }
-
-    .bounce{ animation:bounce .28s ease; }
-    @keyframes bounce{
-      0%{ transform: scale(1); }
-      60%{ transform: scale(1.02); }
-      100%{ transform: scale(1); }
-    }
-
-    canvas#confetti{
-      position:fixed; inset:0; pointer-events:none; z-index:999;
-    }
-  </style>
+<style>
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, "Noto Sans SC", "PingFang SC", sans-serif;
+  background: linear-gradient(120deg,#eef2ff,#fff1f2);
+}
+header{
+  padding:16px 24px;
+  background:#ffffffcc;
+  backdrop-filter: blur(8px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+h1{margin:0;font-size:22px;}
+button{
+  font-size:18px;
+  padding:10px 16px;
+  border-radius:12px;
+  border:1px solid #ccc;
+  background:#fff;
+  cursor:pointer;
+}
+main{
+  max-width:1100px;
+  margin:24px auto;
+  padding:0 16px;
+  display:grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap:20px;
+}
+.card{
+  background:white;
+  border-radius:24px;
+  padding:20px;
+  box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+#imgBox{
+  height:420px;
+  border:2px dashed #ddd;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#imgBox img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+}
+.choice{
+  width:100%;
+  margin-top:14px;
+  padding:16px;
+  font-size:22px;
+  font-weight:700;
+  border-radius:16px;
+  border:1px solid #bbb;
+  background:#fff;
+}
+.choice:hover{background:#f0f9ff}
+.info{
+  display:flex;
+  gap:12px;
+  margin-bottom:14px;
+}
+.badge{
+  padding:10px 14px;
+  border-radius:999px;
+  background:#f1f5f9;
+  font-size:16px;
+}
+#msg{
+  margin-top:16px;
+  font-size:18px;
+}
+</style>
 </head>
+
 <body>
-<canvas id="confetti"></canvas>
 
 <header>
-  <div class="wrap top">
-    <div class="title">
-      <h1>图片识字：枪的中文</h1>
-      <div class="sub">看图片，选正确的中文词</div>
-    </div>
-    <div class="controls">
-      <label class="chip"><input id="tts" type="checkbox" /> 中文朗读</label>
-      <button id="nextBtn" class="btn">下一题</button>
-    </div>
-  </div>
+  <h1>图片识字：枪的中文</h1>
+  <button onclick="next()">下一题</button>
 </header>
 
 <main>
-  <div class="wrap grid">
-    <section class="card">
-      <div class="media" id="media"></div>
-    </section>
+  <div class="card">
+    <div id="imgBox"></div>
+  </div>
 
-    <section class="card" id="panel">
-      <div class="hud">
-        <div class="pill">分数：<strong id="score">0</strong></div>
-        <div class="pill">题数：<strong id="count">0</strong></div>
-        <div class="pill hint">提示：<strong id="hint">—</strong></div>
-      </div>
+  <div class="card">
+    <div class="info">
+      <div class="badge">分数：<span id="score">0</span></div>
+      <div class="badge">题数：<span id="count">0</span></div>
+      <div class="badge">提示：<span id="hint">—</span></div>
+    </div>
 
-      <div class="progress" aria-label="进度条">
-        <div class="bar" id="bar"></div>
-      </div>
-
-      <div class="choices" id="choices"></div>
-      <div class="msg" id="msg">准备好了吗？看图片，选中文词。</div>
-    </section>
+    <div id="choices"></div>
+    <div id="msg">准备好了吗？看图片，选中文词。</div>
   </div>
 </main>
 
 <script>
-  /*
-    你要“标准图片”：把图片放到 /assets/ 下面，并用这些文件名。
-    如果图片不存在，会自动用简化 SVG 备用图（不会白屏）。
-  */
-  const items = [
-    { zh:"手枪", hint:"小",   img:"assets/shouqiang.png", svg: pistolSVG() },
-    { zh:"步枪", hint:"长",   img:"assets/buqiang.png",  svg: rifleSVG() },
-    { zh:"霰弹枪", hint:"吵", img:"assets/xiandanqiang.png", svg: shotgunSVG() },
-    { zh:"冲锋枪", hint:"快", img:"assets/chongfengqiang.png", svg: smgSVG() },
-    { zh:"狙击枪", hint:"准", img:"assets/jujiqiang.png", svg: sniperSVG() },
-    { zh:"机枪", hint:"很大", img:"assets/jiqiang.png", svg: mgSVG() },
-  ];
+const items = [
+  { zh:"手枪", hint:"小",   img:"/gun/assets/shouqiang.png" },
+  { zh:"步枪", hint:"长",   img:"/gun/assets/buqiang.png" },
+  { zh:"霰弹枪", hint:"吵", img:"/gun/assets/xiandanqiang.png" },
+  { zh:"冲锋枪", hint:"快", img:"/gun/assets/chongfengqiang.png" },
+  { zh:"狙击枪", hint:"准", img:"/gun/assets/jujiqiang.png" },
+  { zh:"机枪", hint:"很大", img:"/gun/assets/jiqiang.png" }
+];
 
-  let score = 0, count = 0, streak = 0;
-  let current = null;
+let score=0, count=0, current=null;
 
-  const media = document.getElementById("media");
-  const choicesBox = document.getElementById("choices");
-  const msg = document.getElementById("msg");
-  const scoreEl = document.getElementById("score");
-  const countEl = document.getElementById("count");
-  const hintEl = document.getElementById("hint");
-  const bar = document.getElementById("bar");
-  const tts = document.getElementById("tts");
-  const panel = document.getElementById("panel");
+function next(){
+  current = items[Math.floor(Math.random()*items.length)];
+  count++;
+  document.getElementById("count").textContent=count;
+  document.getElementById("hint").textContent=current.hint;
 
-  document.getElementById("nextBtn").addEventListener("click", newRound);
+  const box=document.getElementById("imgBox");
+  box.innerHTML="";
+  const img=new Image();
+  img.src=current.img;
+  img.onerror=()=>{ box.textContent="（图片未加载）"; };
+  box.appendChild(img);
 
-  function speak(text){
-    if(!tts.checked) return;
-    if(!("speechSynthesis" in window)) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "zh-CN";
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
+  const opts=[current.zh];
+  while(opts.length<3){
+    const t=items[Math.floor(Math.random()*items.length)].zh;
+    if(!opts.includes(t)) opts.push(t);
   }
+  opts.sort(()=>Math.random()-0.5);
 
-  function shuffle(arr){
-    const a = arr.slice();
-    for(let i=a.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [a[i],a[j]] = [a[j],a[i]];
-    }
-    return a;
+  const c=document.getElementById("choices");
+  c.innerHTML="";
+  opts.forEach(o=>{
+    const b=document.createElement("button");
+    b.className="choice";
+    b.textContent=o;
+    b.onclick=()=>check(o);
+    c.appendChild(b);
+  });
+
+  document.getElementById("msg").textContent="看图片，选正确的中文词。";
+}
+
+function check(ans){
+  if(ans===current.zh){
+    score++;
+    document.getElementById("score").textContent=score;
+    document.getElementById("msg").textContent="答对了！这是「"+current.zh+"」。";
+    setTimeout(next,800);
+  }else{
+    document.getElementById("msg").textContent="再试一次。提示："+current.hint;
   }
+}
 
-  function pickChoices(correctZh){
-    const others = items.filter(x => x.zh !== correctZh).map(x => x.zh);
-    const distractors = shuffle(others).slice(0,2);
-    return shuffle([correctZh, ...distractors]);
-  }
+next();
+</script>
 
-  function setMsg(text, type){
-    msg.textContent = text;
-    msg.className = "msg" + (type ? (" " + type) : "");
-  }
-
-  function setProgress(){
-    // 每 10 题一轮进度（循环）
-    const mod = (count % 10);
-    const pct = (mod / 10) * 100;
-    bar.style.width = pct + "%";
-  }
-
-  function renderMedia(item){
-    media.innerHTML = "";
-    const img = new Image();
-    img.alt = item.zh;
-    img.src = item.img;
-    img.onload = () => media.appendChild(img);
-    img.onerror = () => { media.innerHTML = item.svg; };
-  }
-
-  function pulse(){
-    panel.classList.remove("bounce");
-    void panel.offsetWidth;
-    panel.classList.add("bounce");
-  }
-
-  function newRound(){
-    current = items[Math.floor(Math.random()*items.length)];
-    count += 1;
-    countEl.textContent = String(count);
-    setProgress();
-
-    renderMedia(current);
-    hintEl.textContent = current.hint;
-
-    const opts = pickChoices(current.zh);
-    choicesBox.innerHTML = "";
-    opts.forEach(opt => {
-      const b = document.createElement("button");
-      b.className = "choice";
-      b.textContent = opt;
-      b.addEventListener("click", () => choose(opt, b));
-      choicesBox.appendChild(b);
-    });
-
-    setMsg("看图片，选正确的中文词。", "");
-    speak(current.zh);
-  }
-
-  function choose(opt, button){
-    if(opt === current.zh){
-      score += 1;
-      streak += 1;
-      scoreEl.textContent = String(score);
-      pulse();
-
-      const extra = streak >= 3 ? " 连对" + streak + "题！" : "";
-      setMsg("答对了！这是「" + current.zh + "」。" + extra, "ok");
-      speak("答对了，" + current.zh);
-
-      if(streak >= 2) shootConfetti();
-      setTimeout(newRound, 750);
-    }else{
-      streak = 0;
-      button.classList.add("wrong");
-      setMsg("再试一次。提示：它比较「" + current.hint + "」。", "bad");
-      speak("再试一次");
-      setTimeout(() => button.classList.remove("wrong"), 500);
-    }
-  }
-
-  // --------- 轻量彩带（互动感）---------
-  const cvs = document.getElementById("confetti");
-  const ctx = cvs.getContext("2d");
-  let conf = [];
-  function resize(){ cvs.width = innerWidth; cvs.height = innerHeight; }
-  addEventListener("resize", resize); resize();
-
-  function shootConfetti(){
-    const n = 80;
-    for(let i=0;i<n;i++){
-      conf.push({
-        x: innerWidth*0.55 + (Math.random()-0.5)*120,
-        y: innerHeight*0.25,
-        vx: (Math.random()-0.5)*8,
-        vy: Math.random()*-8 - 6,
-        g: 0.22 + Math.random()*0.08,
-        r: 3 + Math.random()*4,
-        a: 1
-      });
-    }
-  }
-  function tick(){
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-    conf = conf.filter(p => p.a > 0);
-    for(const p of conf){
-      p.vy += p.g;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.a -= 0.012;
-      ctx.globalAlpha = Math.max(p.a,0);
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-    requestAnimationFrame(tick);
-  }
-  tick();
-
-  // --------- 备用简化 SVG（无真实图片时也能用）---------
-  function baseSVG(inner){
-    return `
-    <svg width="520" height="340" viewBox="0 0 520 340" role="img" aria-label="图示" style="width:100%;height:100%;">
-      <rect x="18" y="18" width="484" height="304" rx="26" fill="#ffffff" stroke="#e8e8e8"/>
-      ${inner}
-    </svg>`;
-  }
-  function pistolSVG(){
-    return baseSVG(`
-      <text x="34" y="62" font-size="18" fill="#666">小</text>
-      <rect x="130" y="135" width="210" height="26" rx="10" fill="#cfd8ff"/>
-      <rect x="320" y="123" width="90" height="12" rx="6" fill="#cfd8ff"/>
-      <rect x="195" y="162" width="38" height="98" rx="12" fill="#cfd8ff"/>
-      <circle cx="214" cy="235" r="9" fill="#b7c3ff"/>
-    `);
-  }
-  function rifleSVG(){
-    return baseSVG(`
-      <text x="34" y="62" font-size="18" fill="#666">长</text>
-      <rect x="72" y="160" width="380" height="18" rx="9" fill="#cfe8ff"/>
-      <rect x="395" y="150" width="58" height="8" rx="4" fill="#cfe8ff"/>
-      <rect x="150" y="178" width="54" height="72" rx="14" fill="#cfe8ff"/>
-      <rect x="90" y="148" width="44" height="14" rx="7" fill="#cfe8ff"/>
-    `);
-  }
-  function shotgunSVG(){
-    return baseSVG(`
-      <text x="34" y="62" font-size="18" fill="#666">吵</text>
-      <rect x="84" y="162" width="360" height="24" rx="12" fill="#ffe3c7"/>
-      <rect x="372" y="152" width="72" height="10" rx="5" fill="#ffe3c7"/>
-      <path d="M110 186 Q150 235 206 246" stroke="#ffd3a6" stroke-width="14" fill="none" stroke-linecap="round"/>
-      <circle cx="440" cy="174" r="3" fill="#d9a67a"/>
-      <circle cx="452" cy="174" r="3" fill="#d9a67a"/>
-    `);
-  }
-  function smgSVG(){
-    return baseSVG(`
-      <text x="34" y="62" font-size="18" fill="#666">快</text>
-      <rect x="100" y="160" width="300" height="18" rx="9" fill="#d7ffd7"/>
-      <rect x="352" y="150" width="48" height="8" rx="4" fill="#d7ffd7"/>
-      <rect x="190" y="178" width="34" height="96" rx="12" fill="#d7ffd7"/>
-      <rect x="226" y="204" width="28" height="84" rx="10" fill="#c1f7c1"/>
-      <path d="M414 160 l22 -16" stroke="#a7eaa7" stroke-width="5" />
-      <path d="M420 178 l24 -16" stroke="#a7eaa7" stroke-width="5" />
-    `);
-  }
-  function sniperSVG(){
-    return baseSVG(`
-      <text x
+</body>
+</html>
