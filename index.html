@@ -274,6 +274,28 @@
     border: 1px solid rgba(2,6,23,.06);
   }
 
+  /* 分数：用手枪图示 */
+  .gunScore{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+    line-height:1;
+    font-size:18px;
+  }
+  .gun{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:22px;
+    height:22px;
+  }
+  .emptyHint{
+    color: rgba(15,23,42,.45);
+    font-weight:700;
+    font-size:12px;
+  }
+
   canvas#confetti{
     position:fixed; inset:0; pointer-events:none; z-index:999;
   }
@@ -349,14 +371,15 @@
       </div>
 
       <div class="rowBtns">
-        <button id="p1Btn" class="btn btnPrimary">老师回合（出题）</button>
-        <button id="p2Btn" class="btn btnPrimary">学生回合（出题）</button>
+        <!-- 修改点 1：删除（出题） -->
+        <button id="p1Btn" class="btn btnPrimary">老师回合</button>
+        <button id="p2Btn" class="btn btnPrimary">学生回合</button>
         <button id="clearBtn" class="btn" title="清空当前题">清空当前题</button>
       </div>
 
       <div class="choices" id="choices"></div>
 
-      <div class="msg" id="msg">先按“老师回合（出题）”或“学生回合（出题）”。</div>
+      <div class="msg" id="msg">先按“老师回合”或“学生回合”。</div>
 
       <div class="scoreBoard">
         <div class="sb">
@@ -365,7 +388,13 @@
             <span style="color:var(--p1);font-weight:900;">P1</span>
           </div>
           <div class="meta">
-            <span class="badgeMini">分数：<strong id="p1Score">0</strong></span>
+            <!-- 修改点 2：分数用手枪图示 -->
+            <span class="badgeMini">
+              分数：
+              <span class="gunScore" id="p1ScoreGuns" title="0">
+                <span class="emptyHint">（暂无）</span>
+              </span>
+            </span>
             <span class="badgeMini">连对：<strong id="p1Streak">0</strong></span>
           </div>
         </div>
@@ -376,7 +405,12 @@
             <span style="color:var(--p2);font-weight:900;">P2</span>
           </div>
           <div class="meta">
-            <span class="badgeMini">分数：<strong id="p2Score">0</strong></span>
+            <span class="badgeMini">
+              分数：
+              <span class="gunScore" id="p2ScoreGuns" title="0">
+                <span class="emptyHint">（暂无）</span>
+              </span>
+            </span>
             <span class="badgeMini">连对：<strong id="p2Streak">0</strong></span>
           </div>
         </div>
@@ -428,8 +462,8 @@ const bar = document.getElementById("bar");
 const tagP1 = document.getElementById("tagP1");
 const tagP2 = document.getElementById("tagP2");
 
-const p1ScoreEl = document.getElementById("p1Score");
-const p2ScoreEl = document.getElementById("p2Score");
+const p1ScoreGuns = document.getElementById("p1ScoreGuns");
+const p2ScoreGuns = document.getElementById("p2ScoreGuns");
 const p1StreakEl = document.getElementById("p1Streak");
 const p2StreakEl = document.getElementById("p2Streak");
 
@@ -590,15 +624,44 @@ function shuffle(arr){
   return a;
 }
 
-function refreshScoreUI(){
-  p1ScoreEl.textContent = String(P[0].score);
-  p2ScoreEl.textContent = String(P[1].score);
-  p1StreakEl.textContent = String(P[0].streak);
-  p2StreakEl.textContent = String(P[1].streak);
-}
 function refreshTurnUI(){
   tagP1.classList.toggle("active", currentTurn === 0);
   tagP2.classList.toggle("active", currentTurn === 1);
+}
+
+/* 分数渲染为手枪图示 */
+function renderGunScore(el, score){
+  el.innerHTML = "";
+  el.title = String(score); // 老师自己用鼠标悬停可看到数字（不显眼）
+  if(score <= 0){
+    const hint = document.createElement("span");
+    hint.className = "emptyHint";
+    hint.textContent = "（暂无）";
+    el.appendChild(hint);
+    return;
+  }
+  // 限制展示长度，避免分数太大把版面挤爆：超过 20 用 “×N”
+  const MAX = 20;
+  const show = Math.min(score, MAX);
+  for(let i=0;i<show;i++){
+    const s = document.createElement("span");
+    s.className = "gun";
+    s.textContent = "🔫";
+    el.appendChild(s);
+  }
+  if(score > MAX){
+    const more = document.createElement("span");
+    more.className = "emptyHint";
+    more.textContent = `×${score}`;
+    el.appendChild(more);
+  }
+}
+
+function refreshScoreUI(){
+  renderGunScore(p1ScoreGuns, P[0].score);
+  renderGunScore(p2ScoreGuns, P[1].score);
+  p1StreakEl.textContent = String(P[0].streak);
+  p2StreakEl.textContent = String(P[1].streak);
 }
 
 /* ====== 渲染图片 ====== */
@@ -657,11 +720,10 @@ function newQuestion(autoSpeak=false){
   msg.textContent = `轮到 ${P[currentTurn].name}：请选择正确的中文词。（按 1-${opts.length}）`;
   msg.className = "msg";
 
-  // 朗读可以保留，但不在页面显示题目字
   if(autoSpeak) speak(current.zh);
 }
 
-/* ====== 作答：答对后不自动出新题，由你再按回合按钮 ====== */
+/* ====== 作答：答对后不自动出新题 ====== */
 function choose(opt, btn){
   if(!current || answered) return;
 
@@ -701,7 +763,7 @@ function clearCurrent(){
   optionIndexToText = [];
   choicesBox.innerHTML = "";
   media.innerHTML = "";
-  msg.textContent = "已清空。请按“老师回合”或“学生回合”出题。";
+  msg.textContent = "已清空。请按“老师回合”或“学生回合”。";
   msg.className = "msg";
 }
 
@@ -716,7 +778,7 @@ function resetGame(){
   levelEl.textContent = "1";
   choicesBox.innerHTML = "";
   media.innerHTML = "";
-  msg.textContent = "重置完成。请按“老师回合”或“学生回合”出题。";
+  msg.textContent = "重置完成。请按“老师回合”或“学生回合”。";
   msg.className = "msg";
 
   setProgress();
