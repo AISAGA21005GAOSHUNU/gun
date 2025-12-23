@@ -242,8 +242,8 @@
     font-size:16px;
     line-height:1.5;
   }
-  .msg.ok{ background: var(--good); border-color: rgba(34,197,94,.26); }
-  .msg.bad{ background: var(--bad); border-color: rgba(239,68,68,.20); }
+  .msg.ok{ background: rgba(34,197,94,.18); border-color: rgba(34,197,94,.26); }
+  .msg.bad{ background: rgba(239,68,68,.16); border-color: rgba(239,68,68,.20); }
 
   .scoreBoard{
     display:grid;
@@ -274,7 +274,6 @@
     border: 1px solid rgba(2,6,23,.06);
   }
 
-  /* 分数：用手枪图示 */
   .gunScore{
     display:flex;
     align-items:center;
@@ -371,7 +370,6 @@
       </div>
 
       <div class="rowBtns">
-        <!-- 修改点 1：删除（出题） -->
         <button id="p1Btn" class="btn btnPrimary">老师回合</button>
         <button id="p2Btn" class="btn btnPrimary">学生回合</button>
         <button id="clearBtn" class="btn" title="清空当前题">清空当前题</button>
@@ -385,10 +383,9 @@
         <div class="sb">
           <div class="name">
             <span>老师</span>
-            <span style="color:var(--p1);font-weight:900;">P1</span>
+            <span style="color:#2563eb;font-weight:900;">P1</span>
           </div>
           <div class="meta">
-            <!-- 修改点 2：分数用手枪图示 -->
             <span class="badgeMini">
               分数：
               <span class="gunScore" id="p1ScoreGuns" title="0">
@@ -402,7 +399,7 @@
         <div class="sb">
           <div class="name">
             <span>学生</span>
-            <span style="color:var(--p2);font-weight:900;">P2</span>
+            <span style="color:#ef4444;font-weight:900;">P2</span>
           </div>
           <div class="meta">
             <span class="badgeMini">
@@ -425,14 +422,26 @@
 /* ====== 图片来源：GitHub raw ====== */
 const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
 
-/* ====== 题库：六种 ====== */
+/* ====== 题库：原本六种 + 新增（你要加入的五个/六个） ======
+   你必须把对应图片上传到 /assets/ ，并确保文件名一致。
+   如果你“只要新增五个”，就把下面某一行删掉即可。
+*/
 const bank = [
+  // 原本六种（你已有）
   { zh:"手枪",  file:"shouqiang.png" },
   { zh:"步枪",  file:"buqiang.png" },
   { zh:"霰弹枪",file:"xiandanqiang.png" },
   { zh:"冲锋枪",file:"chongfengqiang.png" },
   { zh:"狙击枪",file:"jujiqiang.png" },
   { zh:"机枪",  file:"jiqiang.png" },
+
+  // 新增（建议文件名；你可以改，但 assets 里也要同名）
+  { zh:"榴弹发射器",    file:"liudanfasheqi.png" },
+  { zh:"反器材步枪",    file:"fanqicaibuchiang.png" },
+  { zh:"加特林机枪",    file:"jiatelinjiqiang.png" },
+  { zh:"AK-47（突击步枪）", file:"ak47.png" },
+  { zh:"卡宾枪",        file:"kabinqiang.png" },
+  { zh:"左轮手枪",      file:"zuolunshouqiang.png" }, // 如果你只要新增5个，可删掉这一行
 ].map(x => ({...x, img: RAW_BASE + x.file}));
 
 /* ====== 玩家 ====== */
@@ -632,7 +641,7 @@ function refreshTurnUI(){
 /* 分数渲染为手枪图示 */
 function renderGunScore(el, score){
   el.innerHTML = "";
-  el.title = String(score); // 老师自己用鼠标悬停可看到数字（不显眼）
+  el.title = String(score);
   if(score <= 0){
     const hint = document.createElement("span");
     hint.className = "emptyHint";
@@ -640,7 +649,6 @@ function renderGunScore(el, score){
     el.appendChild(hint);
     return;
   }
-  // 限制展示长度，避免分数太大把版面挤爆：超过 20 用 “×N”
   const MAX = 20;
   const show = Math.min(score, MAX);
   for(let i=0;i<show;i++){
@@ -671,7 +679,7 @@ function renderMedia(item){
   img.alt = "识字图片";
   img.src = item.img;
   img.onload = () => media.appendChild(img);
-  img.onerror = () => { media.textContent = "图片加载失败（请检查文件名/网络）"; };
+  img.onerror = () => { media.textContent = "图片加载失败（请检查 assets 文件名/路径）"; };
 }
 
 /* ====== 手动回合：按按钮才出题 ====== */
