@@ -435,14 +435,22 @@ const bank = [
   { zh:"狙击枪",file:"jujiqiang.png" },
   { zh:"机枪",  file:"jiqiang.png" },
 
-  // 新增（建议文件名；你可以改，但 assets 里也要同名）
+  // 你现有新增
   { zh:"榴弹发射器",    file:"liudanfasheqi.png" },
   { zh:"反器材步枪",    file:"fanqicaibuchiang.png" },
   { zh:"加特林机枪",    file:"jiatelinjiqiang.png" },
   { zh:"AK-47（突击步枪）", file:"ak47.png" },
   { zh:"卡宾枪",        file:"kabinqiang.png" },
-  { zh:"左轮手枪",      file:"zuolunshouqiang.png" }, // 如果你只要新增5个，可删掉这一行
+  { zh:"左轮手枪",      file:"zuolunshouqiang.png" },
+
+  // 再新增五种（按你之前那五把）
+  { zh:"扭曲枪",        file:"niuquqiang.png" },       // Distortion Gun
+  { zh:"变形枪",        file:"bianxingqiang.png" },    // Warper Gun
+  { zh:"永冻枪",        file:"yongdongqiang.png" },    // Permafrost Gun
+  { zh:"竞敌重槌",      file:"jingdizhongchui.png" },  // Maul Rival
+  { zh:"权杖",          file:"quanzhang.png" },        // Scepter
 ].map(x => ({...x, img: RAW_BASE + x.file}));
+
 
 /* ====== 玩家 ====== */
 const P = [
