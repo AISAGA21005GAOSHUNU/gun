@@ -422,12 +422,11 @@
 /* ====== 图片来源：GitHub raw ====== */
 const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
 
-/* ====== 题库：原本六种 + 新增（你要加入的五个/六个） ======
-   你必须把对应图片上传到 /assets/ ，并确保文件名一致。
-   如果你“只要新增五个”，就把下面某一行删掉即可。
+/* ====== 题库 ======
+   包含原有的枪械 + 你最新要求的三种 (Smoke Grenade, Molotov, Exogun)
 */
 const bank = [
-  // 原本六种（你已有）
+  // 原本六种
   { zh:"手枪",  file:"shouqiang.png" },
   { zh:"步枪",  file:"buqiang.png" },
   { zh:"霰弹枪",file:"xiandanqiang.png" },
@@ -443,12 +442,18 @@ const bank = [
   { zh:"卡宾枪",        file:"kabinqiang.png" },
   { zh:"左轮手枪",      file:"zuolunshouqiang.png" },
 
-  // 再新增五种（按你之前那五把）
-  { zh:"扭曲枪",        file:"niuquqiang.png" },       // Distortion Gun
-  { zh:"变形枪",        file:"bianxingqiang.png" },    // Warper Gun
-  { zh:"永冻枪",        file:"yongdongqiang.png" },    // Permafrost Gun
-  { zh:"竞敌重槌",      file:"jingdizhongchui.png" },  // Maul Rival
-  { zh:"权杖",          file:"quanzhang.png" },        // Scepter
+  // 之前新增的五种
+  { zh:"扭曲枪",        file:"niuquqiang.png" },
+  { zh:"变形枪",        file:"bianxingqiang.png" },
+  { zh:"永冻枪",        file:"yongdongqiang.png" },
+  { zh:"竞敌重槌",      file:"jingdizhongchui.png" },
+  { zh:"权杖",          file:"quanzhang.png" },
+
+  // ★★★ 本次新增的三种 ★★★
+  { zh:"烟雾弹",        file:"smokegrenade.png" }, // smoke grenade
+  { zh:"汽油弹",        file:"molotov.png" },      // molotov
+  { zh:"异能枪",        file:"exogun.png" },       // exogun
+
 ].map(x => ({...x, img: RAW_BASE + x.file}));
 
 
@@ -685,129 +690,3 @@ function renderMedia(item){
   media.innerHTML = "";
   const img = new Image();
   img.alt = "识字图片";
-  img.src = item.img;
-  img.onload = () => media.appendChild(img);
-  img.onerror = () => { media.textContent = "图片加载失败（请检查 assets 文件名/路径）"; };
-}
-
-/* ====== 手动回合：按按钮才出题 ====== */
-function startTurn(turn){
-  currentTurn = turn;
-  refreshTurnUI();
-  newQuestion(true);
-}
-
-function newQuestion(autoSpeak=false){
-  current = bank[Math.floor(Math.random()*bank.length)];
-  answered = false;
-
-  count += 1;
-  countEl.textContent = String(count);
-
-  renderMedia(current);
-
-  const k = choiceCount();
-  const others = shuffle(bank.filter(x => x.zh !== current.zh)).slice(0, Math.max(0, k-1)).map(x => x.zh);
-  const opts = shuffle([current.zh, ...others]);
-
-  optionIndexToText = opts.slice();
-
-  choicesBox.innerHTML = "";
-  opts.forEach((opt, idx) => {
-    const b = document.createElement("button");
-    b.className = "choice";
-    b.dataset.idx = String(idx);
-
-    const num = document.createElement("span");
-    num.className = "num";
-    num.textContent = String(idx + 1);
-
-    const txt = document.createElement("span");
-    txt.className = "txt";
-    txt.textContent = opt;
-
-    b.appendChild(num);
-    b.appendChild(txt);
-
-    b.addEventListener("click", () => choose(opt, b));
-    choicesBox.appendChild(b);
-  });
-
-  msg.textContent = `轮到 ${P[currentTurn].name}：请选择正确的中文词。（按 1-${opts.length}）`;
-  msg.className = "msg";
-
-  if(autoSpeak) speak(current.zh);
-}
-
-/* ====== 作答：答对后不自动出新题 ====== */
-function choose(opt, btn){
-  if(!current || answered) return;
-
-  if(opt === current.zh){
-    answered = true;
-
-    P[currentTurn].score += 1;
-    P[currentTurn].streak += 1;
-    P[1-currentTurn].streak = 0;
-
-    xp += 1;
-
-    msg.textContent = `答对了！要出新题请按“老师回合”或“学生回合”。`;
-    msg.className = "msg ok";
-
-    beep(660, 0.08);
-    if(P[currentTurn].streak >= 2) shootConfetti();
-    speak("答对了");
-
-    levelUpIfNeeded();
-    refreshScoreUI();
-  }else{
-    P[currentTurn].streak = 0;
-    refreshScoreUI();
-    btn.classList.add("wrong");
-    msg.textContent = `不对。再试一次。（无提示）`;
-    msg.className = "msg bad";
-    beep(220, 0.10);
-    speak("再试一次");
-    setTimeout(()=>btn.classList.remove("wrong"), 520);
-  }
-}
-
-function clearCurrent(){
-  current = null;
-  answered = false;
-  optionIndexToText = [];
-  choicesBox.innerHTML = "";
-  media.innerHTML = "";
-  msg.textContent = "已清空。请按“老师回合”或“学生回合”。";
-  msg.className = "msg";
-}
-
-function resetGame(){
-  count = 0; level = 1; xp = 0;
-  current = null; currentTurn = null; answered = false;
-  optionIndexToText = [];
-  P[0].score = 0; P[0].streak = 0;
-  P[1].score = 0; P[1].streak = 0;
-
-  countEl.textContent = "0";
-  levelEl.textContent = "1";
-  choicesBox.innerHTML = "";
-  media.innerHTML = "";
-  msg.textContent = "重置完成。请按“老师回合”或“学生回合”。";
-  msg.className = "msg";
-
-  setProgress();
-  refreshScoreUI();
-  refreshTurnUI();
-}
-
-/* init */
-levelEl.textContent = String(level);
-setProgress();
-refreshScoreUI();
-clearCurrent();
-</script>
-
-</body>
-</html>
