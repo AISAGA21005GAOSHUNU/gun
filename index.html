@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-Hans">
+<html lang="zh-Hant">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>图片识字：枪的中文（两人对战｜无提示｜手动回合）</title>
+<title>圖片識字：槍的中文（兩人對戰｜無提示｜手動回合）</title>
 
 <style>
   :root{
@@ -19,7 +19,7 @@
 
   body{
     margin:0;
-    font-family: system-ui, -apple-system, "Noto Sans SC","PingFang SC", Arial, sans-serif;
+    font-family: system-ui, -apple-system, "Noto Sans TC","PingFang TC", Arial, sans-serif;
     color: #0b1220;
     background:
       radial-gradient(1200px 600px at 15% 20%, rgba(34,197,94,.25), transparent 60%),
@@ -323,24 +323,24 @@
 <header>
   <div class="wrap top">
     <div class="title">
-      <h1>图片识字：枪的中文（两人对战）</h1>
-      <div class="sub">无提示｜不显示答案｜回合手动按</div>
+      <h1>圖片識字：槍的中文（兩人對戰）</h1>
+      <div class="sub">無提示｜不顯示答案｜回合手動按</div>
     </div>
 
     <div class="controls">
-      <label class="chip"><input id="ttsOn" type="checkbox" checked /> 中文朗读</label>
-      <label class="chip">语音：
-        <select id="voiceSel" title="选择中文声音"></select>
+      <label class="chip"><input id="ttsOn" type="checkbox" checked /> 中文朗讀</label>
+      <label class="chip">語音：
+        <select id="voiceSel" title="選擇中文聲音"></select>
       </label>
-      <label class="chip">语速：
-        <select id="rateSel" title="语速">
+      <label class="chip">語速：
+        <select id="rateSel" title="語速">
           <option value="0.78">更慢</option>
           <option value="0.85" selected>慢</option>
           <option value="0.92">正常</option>
         </select>
       </label>
 
-      <button id="resetBtn" class="btn" title="重置比分与等级">重置比赛</button>
+      <button id="resetBtn" class="btn" title="重置比分與等級">重置比賽</button>
     </div>
   </div>
 </header>
@@ -349,127 +349,127 @@
   <div class="grid">
     <section class="card">
       <div class="media" id="media"></div>
-      <div class="tiny">说明：本模式无提示，且不会显示答案字。请先按“老师回合”或“学生回合”出题。可按键盘 1–5 作答。</div>
+      <div class="tiny">說明：本模式無提示，且不會顯示答案字。請先按「老師回合」或「學生回合」出題。可按鍵盤 1–5 作答。</div>
     </section>
 
     <section class="card" id="panel">
       <div class="turn">
-        <div class="tag p1" id="tagP1"><span class="dot"></span>老师 回合</div>
-        <div class="tag p2" id="tagP2"><span class="dot"></span>学生 回合</div>
-        <div class="pill">题数：<strong id="count">0</strong></div>
-        <div class="pill">等级：<strong id="level">1</strong></div>
+        <div class="tag p1" id="tagP1"><span class="dot"></span>老師 回合</div>
+        <div class="tag p2" id="tagP2"><span class="dot"></span>學生 回合</div>
+        <div class="pill">題數：<strong id="count">0</strong></div>
+        <div class="pill">等級：<strong id="level">1</strong></div>
       </div>
 
-      <div class="barWrap" aria-label="升级进度">
+      <div class="barWrap" aria-label="升級進度">
         <div class="bar" id="bar"></div>
       </div>
 
       <div class="promptRow">
-        <div class="neutral">请看图片，选择正确的中文词。</div>
-        <button class="iconBtn" id="speakBtn" title="重播朗读（不显示文字）">🔊 重播</button>
+        <div class="neutral">請看圖片，選擇正確的中文詞。</div>
+        <button class="iconBtn" id="speakBtn" title="重播朗讀（不顯示文字）">🔊 重播</button>
       </div>
 
       <div class="rowBtns">
-        <button id="p1Btn" class="btn btnPrimary">老师回合</button>
-        <button id="p2Btn" class="btn btnPrimary">学生回合</button>
-        <button id="clearBtn" class="btn" title="清空当前题">清空当前题</button>
+        <button id="p1Btn" class="btn btnPrimary">老師回合</button>
+        <button id="p2Btn" class="btn btnPrimary">學生回合</button>
+        <button id="clearBtn" class="btn" title="清空當前題">清空當前題</button>
       </div>
 
       <div class="choices" id="choices"></div>
 
-      <div class="msg" id="msg">先按“老师回合”或“学生回合”。</div>
+      <div class="msg" id="msg">先按「老師回合」或「學生回合」。</div>
 
       <div class="scoreBoard">
         <div class="sb">
           <div class="name">
-            <span>老师</span>
+            <span>老師</span>
             <span style="color:#2563eb;font-weight:900;">P1</span>
           </div>
           <div class="meta">
             <span class="badgeMini">
-              分数：
+              分數：
               <span class="gunScore" id="p1ScoreGuns" title="0">
-                <span class="emptyHint">（暂无）</span>
+                <span class="emptyHint">（暫無）</span>
               </span>
             </span>
-            <span class="badgeMini">连对：<strong id="p1Streak">0</strong></span>
+            <span class="badgeMini">連對：<strong id="p1Streak">0</strong></span>
           </div>
         </div>
 
         <div class="sb">
           <div class="name">
-            <span>学生</span>
+            <span>學生</span>
             <span style="color:#ef4444;font-weight:900;">P2</span>
           </div>
           <div class="meta">
             <span class="badgeMini">
-              分数：
+              分數：
               <span class="gunScore" id="p2ScoreGuns" title="0">
-                <span class="emptyHint">（暂无）</span>
+                <span class="emptyHint">（暫無）</span>
               </span>
             </span>
-            <span class="badgeMini">连对：<strong id="p2Streak">0</strong></span>
+            <span class="badgeMini">連對：<strong id="p2Streak">0</strong></span>
           </div>
         </div>
       </div>
 
-      <div class="tiny">规则：无提示、无题面文字显示。每次由你选择“老师回合/学生回合”出新题；答对加分并升级（等级越高选项越多）。</div>
+      <div class="tiny">規則：無提示、無題面文字顯示。每次由你選擇「老師回合/學生回合」出新題；答對加分並升級（等級越高選項越多）。</div>
     </section>
   </div>
 </main>
 
 <script>
-/* ====== 图片来源：GitHub raw ====== */
+/* ====== 圖片來源：GitHub raw ====== */
 const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
 
-/* ====== 题库 ======
-   包含原有的枪械 + 你最新要求的三种 (Smoke Grenade, Molotov, Exogun)
+/* ====== 題庫 ======
+   包含原有的槍械 + 你最新要求的三種 (Smoke Grenade, Molotov, Exogun)
 */
 const bank = [
-  // 原本六种
-  { zh:"手枪",  file:"shouqiang.png" },
-  { zh:"步枪",  file:"buqiang.png" },
-  { zh:"霰弹枪",file:"xiandanqiang.png" },
-  { zh:"冲锋枪",file:"chongfengqiang.png" },
-  { zh:"狙击枪",file:"jujiqiang.png" },
-  { zh:"机枪",  file:"jiqiang.png" },
+  // 原本六種
+  { zh:"手槍",  file:"shouqiang.png" },
+  { zh:"步槍",  file:"buqiang.png" },
+  { zh:"霰彈槍",file:"xiandanqiang.png" },
+  { zh:"衝鋒槍",file:"chongfengqiang.png" },
+  { zh:"狙擊槍",file:"jujiqiang.png" },
+  { zh:"機槍",  file:"jiqiang.png" },
 
-  // 你现有新增
-  { zh:"榴弹发射器",    file:"liudanfasheqi.png" },
-  { zh:"反器材步枪",    file:"fanqicaibuchiang.png" },
-  { zh:"加特林机枪",    file:"jiatelinjiqiang.png" },
-  { zh:"突击步枪", file:"ak47.png" },
-  { zh:"卡宾枪",        file:"kabinqiang.png" },
-  { zh:"左轮手枪",      file:"zuolunshouqiang.png" },
+  // 你現有新增
+  { zh:"榴彈發射器",    file:"liudanfasheqi.png" },
+  { zh:"反器材步槍",    file:"fanqicaibuchiang.png" },
+  { zh:"加特林機槍",    file:"jiatelinjiqiang.png" },
+  { zh:"突擊步槍", file:"ak47.png" },
+  { zh:"卡賓槍",        file:"kabinqiang.png" },
+  { zh:"左輪手槍",      file:"zuolunshouqiang.png" },
 
-  // 之前新增的五种
-  { zh:"扭曲枪",        file:"niuquqiang.png" },
-  { zh:"变形枪",        file:"bianxingqiang.png" },
-  { zh:"永冻枪",        file:"yongdongqiang.png" },
-  { zh:"竞敌重槌",      file:"jingdizhongchui.png" },
-  { zh:"权杖",          file:"quanzhang.png" },
+  // 之前新增的五種
+  { zh:"扭曲槍",        file:"niuquqiang.png" },
+  { zh:"變形槍",        file:"bianxingqiang.png" },
+  { zh:"永凍槍",        file:"yongdongqiang.png" },
+  { zh:"競敵重槌",      file:"jingdizhongchui.png" },
+  { zh:"權杖",          file:"quanzhang.png" },
 
-  // ★★★ 本次新增的三种 ★★★
-  { zh:"烟雾弹",        file:"smokegrenade.png" }, // smoke grenade
-  { zh:"汽油弹",        file:"molotov.png" },      // molotov
-  { zh:"异能枪",        file:"exogun.png" },       // exogun
+  // ★★★ 本次新增的三種 ★★★
+  { zh:"煙霧彈",        file:"smokegrenade.png" }, // smoke grenade
+  { zh:"汽油彈",        file:"molotov.png" },      // molotov
+  { zh:"異能槍",        file:"exogun.png" },       // exogun
 
 ].map(x => ({...x, img: RAW_BASE + x.file}));
 
 
 /* ====== 玩家 ====== */
 const P = [
-  { name:"老师", score:0, streak:0 },
-  { name:"学生", score:0, streak:0 },
+  { name:"老師", score:0, streak:0 },
+  { name:"學生", score:0, streak:0 },
 ];
 
-/* ====== 状态 ====== */
+/* ====== 狀態 ====== */
 let count = 0;
 let level = 1;
 let xp = 0;
 
 let current = null;
-let currentTurn = null;  // 0/1；null 表示还未选回合
+let currentTurn = null;  // 0/1；null 表示還未選回合
 let optionIndexToText = [];
 let answered = false;
 
@@ -495,7 +495,7 @@ document.getElementById("clearBtn").addEventListener("click", clearCurrent);
 document.getElementById("resetBtn").addEventListener("click", resetGame);
 document.getElementById("speakBtn").addEventListener("click", () => speak(current?.zh || ""));
 
-/* ====== 键盘 1-5 作答 ====== */
+/* ====== 鍵盤 1-5 作答 ====== */
 document.addEventListener("keydown", (e) => {
   if(!current || answered) return;
   const k = e.key;
@@ -546,7 +546,7 @@ function speak(text){
   const v = all[idx] || all.find(x => /zh|cmn/i.test(x.lang)) || null;
 
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = "zh-CN";
+  u.lang = "zh-TW";
   if(v) u.voice = v;
   u.rate = Number(rateSel.value || 0.85);
   u.pitch = 1.0;
@@ -556,7 +556,7 @@ function speak(text){
   speechSynthesis.speak(u);
 }
 
-/* ====== 轻音效 ====== */
+/* ====== 輕音效 ====== */
 let audioCtx = null;
 function beep(freq, dur=0.08){
   try{
@@ -572,7 +572,7 @@ function beep(freq, dur=0.08){
   }catch(e){}
 }
 
-/* ====== 彩带 ====== */
+/* ====== 彩帶 ====== */
 const cvs = document.getElementById("confetti");
 const ctx = cvs.getContext("2d");
 let conf = [];
@@ -612,7 +612,7 @@ function tick(){
 }
 tick();
 
-/* ====== 难度（无提示版：只增选项数） ====== */
+/* ====== 難度（無提示版：只增選項數） ====== */
 function choiceCount(){
   if(level <= 1) return 3;
   if(level === 2) return 4;
@@ -629,7 +629,7 @@ function levelUpIfNeeded(){
     xp = 0;
     level += 1;
     levelEl.textContent = String(level);
-    msg.textContent = `升级！等级 ${level}：选项更多，更有挑战。`;
+    msg.textContent = `升級！等級 ${level}：選項更多，更有挑戰。`;
     msg.className = "msg ok";
     shootConfetti();
     beep(880, 0.10); beep(990, 0.10);
@@ -651,14 +651,14 @@ function refreshTurnUI(){
   tagP2.classList.toggle("active", currentTurn === 1);
 }
 
-/* 分数渲染为手枪图示 */
+/* 分數渲染為手槍圖示 */
 function renderGunScore(el, score){
   el.innerHTML = "";
   el.title = String(score);
   if(score <= 0){
     const hint = document.createElement("span");
     hint.className = "emptyHint";
-    hint.textContent = "（暂无）";
+    hint.textContent = "（暫無）";
     el.appendChild(hint);
     return;
   }
@@ -685,17 +685,17 @@ function refreshScoreUI(){
   p2StreakEl.textContent = String(P[1].streak);
 }
 
-/* ====== 渲染图片 ====== */
+/* ====== 渲染圖片 ====== */
 function renderMedia(item){
   media.innerHTML = "";
   const img = new Image();
-  img.alt = "识字图片";
+  img.alt = "識字圖片";
   img.src = item.img;
   img.onload = () => media.appendChild(img);
-  img.onerror = () => { media.textContent = "图片加载失败（请检查 assets 文件名/路径）"; };
+  img.onerror = () => { media.textContent = "圖片加載失敗（請檢查 assets 文件名/路徑）"; };
 }
 
-/* ====== 手动回合：按按钮才出题 ====== */
+/* ====== 手動回合：按按鈕才出題 ====== */
 function startTurn(turn){
   currentTurn = turn;
   refreshTurnUI();
@@ -738,13 +738,13 @@ function newQuestion(autoSpeak=false){
     choicesBox.appendChild(b);
   });
 
-  msg.textContent = `轮到 ${P[currentTurn].name}：请选择正确的中文词。（按 1-${opts.length}）`;
+  msg.textContent = `輪到 ${P[currentTurn].name}：請選擇正確的中文詞。（按 1-${opts.length}）`;
   msg.className = "msg";
 
   if(autoSpeak) speak(current.zh);
 }
 
-/* ====== 作答：答对后不自动出新题 ====== */
+/* ====== 作答：答對後不自動出新題 ====== */
 function choose(opt, btn){
   if(!current || answered) return;
 
@@ -757,12 +757,12 @@ function choose(opt, btn){
 
     xp += 1;
 
-    msg.textContent = `答对了！要出新题请按“老师回合”或“学生回合”。`;
+    msg.textContent = `答對了！要出新題請按「老師回合」或「學生回合」。`;
     msg.className = "msg ok";
 
     beep(660, 0.08);
     if(P[currentTurn].streak >= 2) shootConfetti();
-    speak("答对了");
+    speak("答對了");
 
     levelUpIfNeeded();
     refreshScoreUI();
@@ -770,10 +770,10 @@ function choose(opt, btn){
     P[currentTurn].streak = 0;
     refreshScoreUI();
     btn.classList.add("wrong");
-    msg.textContent = `不对。再试一次。（无提示）`;
+    msg.textContent = `不對。再試一次。（無提示）`;
     msg.className = "msg bad";
     beep(220, 0.10);
-    speak("再试一次");
+    speak("再試一次");
     setTimeout(()=>btn.classList.remove("wrong"), 520);
   }
 }
@@ -784,7 +784,7 @@ function clearCurrent(){
   optionIndexToText = [];
   choicesBox.innerHTML = "";
   media.innerHTML = "";
-  msg.textContent = "已清空。请按“老师回合”或“学生回合”。";
+  msg.textContent = "已清空。請按「老師回合」或「學生回合」。";
   msg.className = "msg";
 }
 
@@ -799,7 +799,7 @@ function resetGame(){
   levelEl.textContent = "1";
   choicesBox.innerHTML = "";
   media.innerHTML = "";
-  msg.textContent = "重置完成。请按“老师回合”或“学生回合”。";
+  msg.textContent = "重置完成。請按「老師回合」或「學生回合」。";
   msg.className = "msg";
 
   setProgress();
