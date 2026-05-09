@@ -423,7 +423,7 @@
 const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
 
 /* ====== 題庫 ======
-   包含原有的槍械 + 你最新要求的三種 (Smoke Grenade, Molotov, Exogun)
+   包含原有的武器 + 新增的 4 種 (煙霧彈、很大的便便、原子彈、飛彈)
 */
 const bank = [
   // 原本六種
@@ -434,7 +434,7 @@ const bank = [
   { zh:"狙擊槍",file:"jujiqiang.png" },
   { zh:"機槍",  file:"jiqiang.png" },
 
-  // 你現有新增
+  // 現有新增
   { zh:"榴彈發射器",    file:"liudanfasheqi.png" },
   { zh:"反器材步槍",    file:"fanqicaibuchiang.png" },
   { zh:"加特林機槍",    file:"jiatelinjiqiang.png" },
@@ -449,10 +449,15 @@ const bank = [
   { zh:"競敵重槌",      file:"jingdizhongchui.png" },
   { zh:"權杖",          file:"quanzhang.png" },
 
-  // ★★★ 本次新增的三種 ★★★
-  { zh:"煙霧彈",        file:"smokegrenade.png" }, // smoke grenade
-  { zh:"汽油彈",        file:"molotov.png" },      // molotov
-  { zh:"異能槍",        file:"exogun.png" },       // exogun
+  // 先前新增的三種
+  { zh:"煙霧彈",        file:"smokegrenade.png" }, 
+  { zh:"汽油彈",        file:"molotov.png" },      
+  { zh:"異能槍",        file:"exogun.png" },       
+
+  // ★★★ 最新要求新增的三種（煙霧彈已在上方） ★★★
+  { zh:"很大的便便",    file:"bigpoop.png" },
+  { zh:"原子彈",        file:"atomicbomb.png" },
+  { zh:"飛彈",          file:"missile.png" }
 
 ].map(x => ({...x, img: RAW_BASE + x.file}));
 
