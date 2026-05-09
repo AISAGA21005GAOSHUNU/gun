@@ -423,42 +423,32 @@
 const RAW_BASE = "https://raw.githubusercontent.com/AISAGA21005GAOSHUNU/gun/main/assets/";
 
 /* ====== 題庫 ======
-   包含原有的武器 + 新增的 4 種 (煙霧彈、很大的便便、原子彈、飛彈)
+   包含原有的武器 + 新增的物品 (共 23 種)
 */
 const bank = [
-  // 原本六種
   { zh:"手槍",  file:"shouqiang.png" },
   { zh:"步槍",  file:"buqiang.png" },
   { zh:"霰彈槍",file:"xiandanqiang.png" },
   { zh:"衝鋒槍",file:"chongfengqiang.png" },
   { zh:"狙擊槍",file:"jujiqiang.png" },
   { zh:"機槍",  file:"jiqiang.png" },
-
-  // 現有新增
   { zh:"榴彈發射器",    file:"liudanfasheqi.png" },
   { zh:"反器材步槍",    file:"fanqicaibuchiang.png" },
   { zh:"加特林機槍",    file:"jiatelinjiqiang.png" },
   { zh:"突擊步槍", file:"ak47.png" },
   { zh:"卡賓槍",        file:"kabinqiang.png" },
   { zh:"左輪手槍",      file:"zuolunshouqiang.png" },
-
-  // 之前新增的五種
   { zh:"扭曲槍",        file:"niuquqiang.png" },
   { zh:"變形槍",        file:"bianxingqiang.png" },
   { zh:"永凍槍",        file:"yongdongqiang.png" },
   { zh:"競敵重槌",      file:"jingdizhongchui.png" },
   { zh:"權杖",          file:"quanzhang.png" },
-
-  // 先前新增的三種
   { zh:"煙霧彈",        file:"smokegrenade.png" }, 
   { zh:"汽油彈",        file:"molotov.png" },      
   { zh:"異能槍",        file:"exogun.png" },       
-
-  // ★★★ 最新要求新增的三種（煙霧彈已在上方） ★★★
   { zh:"很大的便便",    file:"bigpoop.png" },
   { zh:"原子彈",        file:"atomicbomb.png" },
   { zh:"飛彈",          file:"missile.png" }
-
 ].map(x => ({...x, img: RAW_BASE + x.file}));
 
 
@@ -690,14 +680,30 @@ function refreshScoreUI(){
   p2StreakEl.textContent = String(P[1].streak);
 }
 
-/* ====== 渲染圖片 ====== */
+/* ====== 渲染圖片（修復圖片重疊與空白問題） ====== */
 function renderMedia(item){
+  // 1. 立即清空畫布，避免快速連按導致圖片堆疊
   media.innerHTML = "";
-  const img = new Image();
+
+  // 2. 建立新的圖片元素並立即放入畫面
+  const img = document.createElement("img");
   img.alt = "識字圖片";
   img.src = item.img;
-  img.onload = () => media.appendChild(img);
-  img.onerror = () => { media.textContent = "圖片加載失敗（請檢查 assets 文件名/路徑）"; };
+  
+  // 3. 如果圖片網址失效或找不到，顯示明顯的紅色錯誤提示
+  img.onerror = () => { 
+    media.innerHTML = `
+      <div style="text-align:center; padding:20px;">
+        <div style="color:#ef4444; font-size:20px; font-weight:900; margin-bottom:8px;">圖片載入失敗 ❌</div>
+        <div style="color:#64748b; font-size:14px; line-height:1.6;">
+          找不到圖片：<strong>${item.file}</strong><br>
+          請檢查 GitHub 的 assets 資料夾，確認檔名與副檔名（大小寫必須完全一樣）。
+        </div>
+      </div>
+    `; 
+  };
+
+  media.appendChild(img);
 }
 
 /* ====== 手動回合：按按鈕才出題 ====== */
